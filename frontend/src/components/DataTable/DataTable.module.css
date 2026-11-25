@@ -1,0 +1,39 @@
+.panel {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.title {
+    margin: 0;
+    padding: 20px;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+}
+
+.scroll {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: start;
+}
+
+.table th, .table td {
+    padding: 0.8rem 20px;
+    border-top: 1px solid var(--color-border);
+    text-align: start;
+}
+
+.table th {
+    background: var(--color-accent-soft);
+    font-size: 0.875rem;
+}
+
+.table .empty {
+    padding-block: 2rem;
+    color: var(--color-text-secondary);
+    text-align: center;
+}

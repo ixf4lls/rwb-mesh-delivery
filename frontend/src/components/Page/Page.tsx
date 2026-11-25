@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
 import styles from './Page.module.css';
 
 type PageProps = {
     title: string;
+    description?: string;
     children?: ReactNode;
 };
 
-export function Page({ title, children }: PageProps) {
+export function Page({ title, description, children }: PageProps) {
     return (
-        <main className={styles.page}>
+        <main className={styles.page} id="main-content" tabIndex={-1}>
             <header className={styles.header}>
-                <Link className={styles.brand} to="/">RWB Mesh Delivery</Link>
+                <h1 className={styles.title}>{title}</h1>
+                {description && <p className={styles.description}>{description}</p>}
             </header>
-            <h1 className={styles.title}>{title}</h1>
             {children}
         </main>
     );

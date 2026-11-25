@@ -1,0 +1,8 @@
+.icon {
+    display: block;
+    flex: none;
+}
+
+.routing {
+    filter: brightness(0.16);
+}

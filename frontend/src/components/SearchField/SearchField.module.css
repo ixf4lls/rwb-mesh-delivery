@@ -1,0 +1,38 @@
+.field {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding-inline: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.field:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-tint);
+}
+
+.input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.65rem 0;
+    border: 0;
+    color: var(--color-text);
+    background: transparent;
+}
+
+.input:focus-visible {
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.field .submit {
+    order: -1;
+    flex: 0 0 44px;
+    height: 44px;
+    padding: 0;
+}
