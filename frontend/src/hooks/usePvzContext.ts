@@ -1,16 +1,12 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useState } from 'react';
-import { meshApi } from '../api/meshApi';
 import { pvzApi } from '../api/pvzApi';
-
-const demoMode = import.meta.env.VITE_API_DEMO_MODE === 'true';
+import { useDemoScope } from './useDemoScope';
 
 export function usePvzContext() {
     const [panel, selectPanel] = useState<'orders' | 'stock'>('orders');
     const [selectedPointId, selectPoint] = useState('');
-    const demo = meshApi.useGetDemoContextQuery(demoMode ? undefined : skipToken);
-    const demoRunId = demo.currentData?.id;
-    const scopeReady = !demoMode || Boolean(demoRunId);
+    const { demo, demoRunId, scopeReady } = useDemoScope();
     const points = pvzApi.useListPickupPointsInfiniteQuery(scopeReady ? { demoRunId } : skipToken);
     const pointsById = new Map(points.currentData?.pages.flatMap((page) => page.items.map((point) => [point.node.id, point] as const)));
     const pointIds = [...pointsById.keys()];

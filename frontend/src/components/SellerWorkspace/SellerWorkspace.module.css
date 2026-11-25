@@ -1,0 +1,16 @@
+.workspace {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.profile, .form, .switcher {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.form label {
+    flex: 1 1 13rem;
+    max-width: 21rem;
+}

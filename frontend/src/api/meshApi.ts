@@ -5,6 +5,12 @@ export type ApiContext = {
     getAccessToken?: () => string | undefined;
 };
 
+export type DemoScope = { demoRunId?: string };
+
+export function scopedHeaders(demoRunId?: string) {
+    return demoRunId ? { 'X-Demo-Run-Id': demoRunId } : {};
+}
+
 type SessionResponse = paths['/me']['get']['responses'][200]['content']['application/json'];
 type DemoContextResponse = paths['/demo/context']['get']['responses'][200]['content']['application/json'];
 type OperationRequest = paths['/operations/{operationId}']['get'];
@@ -13,7 +19,7 @@ type OperationArgs = OperationRequest['parameters']['path'] & NonNullable<Operat
 
 export const meshApi = createApi({
     reducerPath: 'meshApi',
-    tagTypes: ['Capacity', 'Batches', 'Orders', 'OrderRoute'],
+    tagTypes: ['Capacity', 'Products', 'Batches', 'Orders', 'OrderRoute'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
         timeout: 10000,

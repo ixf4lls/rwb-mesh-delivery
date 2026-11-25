@@ -1,8 +1,8 @@
-import { meshApi } from './meshApi';
+import { meshApi, scopedHeaders } from './meshApi';
+import type { DemoScope as Scope } from './meshApi';
 import type { components, operations } from './schema.generated';
 
 type Schemas = components['schemas'];
-type Scope = { demoRunId?: string };
 type ScopedQuery<Query> = Scope & NonNullable<Query>;
 
 export type Capacity = Schemas['Capacity'];
@@ -12,10 +12,6 @@ export type BatchReceipt = Schemas['BatchReceipt'];
 export type Order = Schemas['Order'];
 export type FulfillmentCommand = Schemas['FulfillmentCommand'];
 export type RouteRevision = Schemas['RouteRevision'];
-
-function scopedHeaders(demoRunId?: string) {
-    return demoRunId ? { 'X-Demo-Run-Id': demoRunId } : {};
-}
 
 export const pvzApi = meshApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,16 +26,17 @@ export const pvzApi = meshApi.injectEndpoints({
                 params: { limit: 100, cursor: pageParam },
             }),
         }),
-        listProducts: builder.infiniteQuery<Schemas['ProductPage'], Scope, string | undefined>({
+        listProducts: builder.infiniteQuery<Schemas['ProductPage'], Scope & { sellerId?: string }, string | undefined>({
             infiniteQueryOptions: {
                 initialPageParam: undefined,
                 getNextPageParam: (lastPage) => lastPage.nextCursor,
             },
-            query: ({ queryArg: { demoRunId }, pageParam }) => ({
+            query: ({ queryArg: { demoRunId, sellerId }, pageParam }) => ({
                 url: '/products',
                 headers: scopedHeaders(demoRunId),
-                params: { limit: 100, cursor: pageParam },
+                params: { limit: 100, cursor: pageParam, sellerId },
             }),
+            providesTags: ['Products'],
         }),
         getPointCapacity: builder.query<Capacity, Scope & { pointId: string }>({
             query: ({ pointId, demoRunId }) => ({

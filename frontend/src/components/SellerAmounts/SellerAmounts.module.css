@@ -1,0 +1,41 @@
+.amounts {
+    display: grid;
+    min-width: 0;
+    gap: 0.875rem;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.metrics div {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.metrics dt {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.metrics dd {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.metrics .profit {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+}
+
+.profit[data-negative='true'] dd {
+    color: #9e2439;
+}

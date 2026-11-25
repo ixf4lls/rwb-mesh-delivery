@@ -1,0 +1,21 @@
+.finance {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.hint, .error {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.error {
+    color: #9e2439;
+}

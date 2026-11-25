@@ -1,0 +1,40 @@
+.catalog, .form, .form fieldset {
+    display: grid;
+    min-width: 0;
+    gap: 0.875rem;
+}
+
+.catalog small {
+    display: block;
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.form {
+    margin-top: 0.75rem;
+}
+
+.form p, .form fieldset {
+    margin: 0;
+}
+
+.form fieldset {
+    padding: 0;
+    border: 0;
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: 0.875rem;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.error {
+    color: #9e2439;
+}
