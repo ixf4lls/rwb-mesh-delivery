@@ -1,0 +1,94 @@
+.document {
+    display: none;
+}
+
+@media print {
+    @page finance {
+        size: A4 portrait;
+        margin: 14mm;
+    }
+
+    body:has(> .document) {
+        background: #fff;
+    }
+
+    body:has(> .document) > :global(#root) {
+        display: none;
+    }
+
+    .document {
+        display: block;
+        page: finance;
+        font-size: 10pt;
+        overflow-wrap: anywhere;
+    }
+
+    .document .header {
+        margin-bottom: 6mm;
+        padding-bottom: 4mm;
+        border-bottom: 1px solid var(--color-accent);
+        break-inside: avoid;
+        break-after: avoid;
+    }
+
+    .header h1 {
+        margin: 2mm 0;
+        font: 700 19pt / 1.15 var(--font-heading);
+    }
+
+    .header p {
+        margin: 0;
+        color: var(--color-text-secondary);
+    }
+
+    .document h2 {
+        padding: 2mm 0;
+        font-size: 12pt;
+        break-after: avoid;
+    }
+
+    .document div:has(> table) {
+        overflow: visible;
+    }
+
+    .document div:has(> h2 + div > table) {
+        margin-block: 3mm;
+        border: 0;
+    }
+
+    .document > div, .summary > div {
+        display: block;
+    }
+
+    .summary > p:first-child {
+        margin-bottom: 3mm;
+    }
+
+    .document dl {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        break-inside: avoid;
+    }
+
+    .document dl:has(> div:nth-child(4):last-child) {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .document table {
+        table-layout: fixed;
+        font-size: 9pt;
+    }
+
+    .document tr {
+        break-inside: avoid;
+    }
+
+    .document th, .document td {
+        padding: 1.4mm;
+        vertical-align: top;
+    }
+
+    .document th {
+        border-bottom: 1px solid var(--color-border);
+        font-size: inherit;
+    }
+}

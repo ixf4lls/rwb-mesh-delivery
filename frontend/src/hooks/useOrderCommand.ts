@@ -5,7 +5,7 @@ import type { OrderAction } from '../functions/pvzOrders';
 import { useOperationConfirmation } from './useOperationConfirmation';
 import { useRepeatableRequest } from './useRepeatableRequest';
 
-const orderTags = ['Orders', 'OrderRoute', 'Batches', 'Capacity'] as const;
+const orderTags = ['Orders', 'OrderRoute', 'Batches', 'Capacity', 'Economics'] as const;
 
 export function useOrderCommand(demoRunId?: string) {
     const dispatch = useDispatch();

@@ -1,0 +1,40 @@
+.ledger {
+    display: grid;
+    min-width: 0;
+    gap: 0.5rem;
+}
+
+.ledger td {
+    overflow-wrap: anywhere;
+}
+
+.ledger small {
+    display: block;
+    color: var(--color-text-secondary);
+}
+
+.negative {
+    color: #9e2439;
+}
+
+@media print {
+    .ledger th:nth-child(1) {
+        width: 17%;
+    }
+
+    .ledger th:nth-child(2) {
+        width: 18%;
+    }
+
+    .ledger th:nth-child(3) {
+        width: 12%;
+    }
+
+    .ledger th:nth-child(4) {
+        width: 15%;
+    }
+
+    .ledger th:nth-child(5) {
+        width: 27%;
+    }
+}

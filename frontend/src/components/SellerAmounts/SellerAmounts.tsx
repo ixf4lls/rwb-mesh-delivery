@@ -1,4 +1,5 @@
 import type { SellerEconomics } from '../../api/sellerApi';
+import { financeCategory } from '../../functions/financeEntries';
 import { formatMoney } from '../../functions/money';
 import { DataTable } from '../DataTable/DataTable';
 import styles from './SellerAmounts.module.css';
@@ -17,7 +18,7 @@ const categories: Record<string, string> = {
 
 export function SellerAmounts({ data }: { data: Amounts }) {
     const rows = data.breakdown.map(({ category, amountMinor }, index) => ({
-        id: `${category}:${index}`, cells: [categories[category] ?? category, formatMoney(amountMinor)],
+        id: `${category}:${index}`, cells: [Object.hasOwn(categories, category) ? categories[category] : financeCategory(category), formatMoney(amountMinor)],
     }));
 
     return (

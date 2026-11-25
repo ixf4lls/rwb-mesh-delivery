@@ -1,4 +1,5 @@
 import box from '../../assets/icons/box.svg';
+import calendar from '../../assets/icons/calendar.svg';
 import dashboard from '../../assets/icons/dashboard.svg';
 import profile from '../../assets/icons/profile.svg';
 import pvz from '../../assets/icons/pvz.svg';
@@ -8,7 +9,7 @@ import seller from '../../assets/icons/seller.svg';
 import settings from '../../assets/icons/settings.svg';
 import styles from './Icon.module.css';
 
-const icons = { box, dashboard, profile, pvz, routing, search, seller, settings };
+const icons = { box, calendar, dashboard, profile, pvz, routing, search, seller, settings };
 
 type IconProps = {
     name: keyof typeof icons;

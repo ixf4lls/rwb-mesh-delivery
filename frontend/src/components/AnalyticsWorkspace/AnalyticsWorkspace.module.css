@@ -1,0 +1,11 @@
+.workspace {
+    display: grid;
+    min-width: 0;
+    gap: 1rem;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}

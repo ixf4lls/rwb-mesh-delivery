@@ -9,6 +9,14 @@ import { Workspaces } from '../components/Workspaces/Workspaces';
 import { workspaceRoutes } from './workspaceRoutes';
 
 const DeliveryWorkspace = lazy(() => import('../components/DeliveryWorkspace/DeliveryWorkspace'));
+const AnalyticsWorkspace = lazy(() => import('../components/AnalyticsWorkspace/AnalyticsWorkspace'));
+
+const workspaces = {
+    '/pvz': <PvzWorkspace />,
+    '/seller': <SellerWorkspace />,
+    '/delivery-model': <DeliveryWorkspace />,
+    '/analytics': <AnalyticsWorkspace />,
+};
 
 export function App() {
     return (
@@ -18,9 +26,7 @@ export function App() {
                 {workspaceRoutes.map((workspace) => (
                     <Route key={workspace.path} path={workspace.path} element={(
                         <Page title={workspace.title} description={workspace.description}>
-                            {workspace.path === '/pvz' ? <PvzWorkspace /> : workspace.path === '/seller' ? <SellerWorkspace /> : (
-                                <Suspense fallback={<QueryNotice message="Открываем модель доставки…" />}><DeliveryWorkspace /></Suspense>
-                            )}
+                            <Suspense fallback={<QueryNotice message="Открываем раздел…" />}>{workspaces[workspace.path]}</Suspense>
                         </Page>
                     )} />
                 ))}
