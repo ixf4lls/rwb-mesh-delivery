@@ -1,0 +1,35 @@
+.panel, .form, .form fieldset, .existing {
+    display: grid;
+    min-width: 0;
+    gap: 0.75rem;
+}
+
+.panel {
+    align-self: start;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.panel h2 {
+    margin: 0;
+    font-size: 1.075rem;
+}
+
+.form fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.existing {
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.75rem;
+}
+
+.error {
+    margin: 0;
+    color: #9e2439;
+    font-size: 0.875rem;
+}

@@ -4,7 +4,7 @@ export function operationIdFromLocation(location: string | null, requestUrl: str
 
     const request = new URL(requestUrl);
     const target = new URL(location, request);
-    const orderPathIndex = request.pathname.lastIndexOf('/orders/');
+    const orderPathIndex = request.pathname.lastIndexOf('/orders');
     const basePath = request.pathname.slice(0, orderPathIndex);
     const expectedPath = `${basePath}/operations/${encodeURIComponent(operationId)}`;
 

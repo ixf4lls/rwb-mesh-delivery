@@ -1,0 +1,22 @@
+.events, .content {
+    display: grid;
+    min-width: 0;
+    gap: 0.75rem;
+}
+
+.box {
+    min-width: 0;
+    padding: 0.875rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.box summary {
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.content {
+    margin-top: 0.75rem;
+}

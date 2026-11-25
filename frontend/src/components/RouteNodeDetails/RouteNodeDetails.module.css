@@ -1,0 +1,22 @@
+.details {
+    display: grid;
+    min-width: 0;
+    gap: 0.625rem;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+}
+
+.details h2, .details p {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.details h2 {
+    font-size: 1.1rem;
+}
+
+.details p {
+    color: var(--color-text-secondary);
+}

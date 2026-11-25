@@ -5,9 +5,6 @@ export const workspaceRoutes = [
         shortTitle: 'ПВЗ',
         icon: 'pvz',
         description: 'Приёмка партий, хранение, сборка и выдача заказов.',
-        contentTitle: 'Очередь задач',
-        columns: ['Задача', 'Партия или заказ', 'Статус'],
-        emptyMessage: 'Здесь появятся задачи по приёмке, сборке и выдаче заказов.',
     },
     {
         path: '/seller',
@@ -15,9 +12,6 @@ export const workspaceRoutes = [
         shortTitle: 'Продавец',
         icon: 'seller',
         description: 'Товары, партии, остатки и стоимость хранения.',
-        contentTitle: 'Товары и остатки',
-        columns: ['Товар', 'Место хранения', 'Доступно', 'В резерве'],
-        emptyMessage: 'Здесь появятся товары, партии и доступные остатки.',
     },
     {
         path: '/delivery-model',
@@ -25,12 +19,8 @@ export const workspaceRoutes = [
         shortTitle: 'Модель',
         icon: 'routing',
         description: 'Маршруты, сроки и сравнение Mesh с доставкой через хаб.',
-        contentTitle: 'Логистическая сеть',
-        emptyMessage: 'Здесь появятся узлы сети и маршруты для выбранного заказа.',
     },
 ] as const;
-
-export type Workspace = (typeof workspaceRoutes)[number];
 
 export const overviewRoute = { path: '/', title: 'Обзор', shortTitle: 'Обзор', icon: 'dashboard' } as const;
 

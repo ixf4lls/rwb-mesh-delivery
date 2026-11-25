@@ -1,11 +1,14 @@
+import { lazy, Suspense } from 'react';
 import { Link, Route, Routes } from 'react-router';
 import { AppLayout } from '../components/AppLayout/AppLayout';
 import { Page } from '../components/Page/Page';
 import { PvzWorkspace } from '../components/PvzWorkspace/PvzWorkspace';
+import { QueryNotice } from '../components/QueryNotice/QueryNotice';
 import { SellerWorkspace } from '../components/SellerWorkspace/SellerWorkspace';
-import { WorkspacePage } from '../components/WorkspacePage/WorkspacePage';
 import { Workspaces } from '../components/Workspaces/Workspaces';
 import { workspaceRoutes } from './workspaceRoutes';
+
+const DeliveryWorkspace = lazy(() => import('../components/DeliveryWorkspace/DeliveryWorkspace'));
 
 export function App() {
     return (
@@ -13,11 +16,11 @@ export function App() {
             <Route element={<AppLayout />}>
                 <Route index element={<Workspaces />} />
                 {workspaceRoutes.map((workspace) => (
-                    <Route key={workspace.path} path={workspace.path} element={workspace.path === '/delivery-model' ? (
-                        <WorkspacePage workspace={workspace} />
-                    ) : (
+                    <Route key={workspace.path} path={workspace.path} element={(
                         <Page title={workspace.title} description={workspace.description}>
-                            {workspace.path === '/pvz' ? <PvzWorkspace /> : <SellerWorkspace />}
+                            {workspace.path === '/pvz' ? <PvzWorkspace /> : workspace.path === '/seller' ? <SellerWorkspace /> : (
+                                <Suspense fallback={<QueryNotice message="Открываем модель доставки…" />}><DeliveryWorkspace /></Suspense>
+                            )}
                         </Page>
                     )} />
                 ))}

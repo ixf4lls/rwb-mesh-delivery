@@ -1,0 +1,37 @@
+.point {
+    display: grid;
+    align-content: center;
+    min-height: 72px;
+    width: 155px;
+    gap: 0.15rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: white;
+    box-shadow: 0 4px 15px rgb(40 33 82 / 8%);
+    overflow-wrap: anywhere;
+}
+
+.point small, .point span {
+    color: var(--color-text-secondary);
+    font-size: 0.7rem;
+    line-height: 1.25;
+}
+
+.point strong {
+    font: 700 0.9rem / 1.25 var(--font-heading);
+}
+
+.point[data-state='current'], .point[data-selected='true'] {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+}
+
+.point[data-state='unavailable'] {
+    border-color: #a82c42;
+    background: #fff2f4;
+}
+
+.handle {
+    opacity: 0;
+}

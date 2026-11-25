@@ -1,11 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { paths } from './schema.generated';
+import type { components, paths } from './schema.generated';
 
 export type ApiContext = {
     getAccessToken?: () => string | undefined;
 };
 
 export type DemoScope = { demoRunId?: string };
+
+export type AcceptedOperation = {
+    operation: components['schemas']['Operation'];
+    location: string | null;
+    requestUrl?: string;
+};
 
 export function scopedHeaders(demoRunId?: string) {
     return demoRunId ? { 'X-Demo-Run-Id': demoRunId } : {};
@@ -19,7 +25,7 @@ type OperationArgs = OperationRequest['parameters']['path'] & NonNullable<Operat
 
 export const meshApi = createApi({
     reducerPath: 'meshApi',
-    tagTypes: ['Capacity', 'Products', 'Batches', 'Orders', 'OrderRoute'],
+    tagTypes: ['Capacity', 'Products', 'Batches', 'Orders', 'OrderRoute', 'DemoContext'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
         timeout: 10000,
@@ -42,6 +48,7 @@ export const meshApi = createApi({
         }),
         getDemoContext: builder.query<DemoContextResponse, void>({
             query: () => '/demo/context',
+            providesTags: ['DemoContext'],
         }),
         getOperation: builder.query<OperationResponse, OperationArgs>({
             query: ({ operationId, 'X-Demo-Run-Id': demoRunId }) => ({

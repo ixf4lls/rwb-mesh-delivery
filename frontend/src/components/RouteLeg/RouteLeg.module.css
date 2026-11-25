@@ -1,0 +1,15 @@
+.label {
+    position: absolute;
+    padding: 2px 5px;
+    transform: translate(-50%, -50%);
+    border-radius: 4px;
+    background: rgb(255 255 255 / 94%);
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.label[data-horizontal='true'] {
+    transform: translate(-50%, calc(-100% - 7px));
+}

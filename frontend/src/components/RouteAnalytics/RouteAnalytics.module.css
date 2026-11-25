@@ -1,0 +1,19 @@
+.analysis {
+    display: grid;
+    min-width: 0;
+    gap: 0.75rem;
+}
+
+.analysis p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.saving {
+    color: #216957;
+}
+
+.extra {
+    color: #9e2439;
+}
