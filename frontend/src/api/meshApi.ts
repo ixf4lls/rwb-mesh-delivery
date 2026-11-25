@@ -13,9 +13,10 @@ type OperationArgs = OperationRequest['parameters']['path'] & NonNullable<Operat
 
 export const meshApi = createApi({
     reducerPath: 'meshApi',
+    tagTypes: ['Capacity', 'Batches', 'Orders', 'OrderRoute'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
-        responseHandler: 'content-type',
+        timeout: 10000,
         isJsonContentType: (headers) => /\bapplication\/(?:[\w.-]+\+)?json\b/i.test(headers.get('content-type') ?? ''),
         prepareHeaders: (headers, { extra }) => {
             const context = extra as ApiContext | undefined;

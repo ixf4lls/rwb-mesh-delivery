@@ -1,0 +1,45 @@
+.stock {
+    display: grid;
+    min-width: 0;
+    gap: 1rem;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+}
+
+.toolbar p, .form p {
+    margin: 0;
+}
+
+.form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.table {
+    min-width: 0;
+}
+
+.table td {
+    min-width: 6rem;
+    overflow-wrap: anywhere;
+}
+
+.table td[colspan] {
+    min-width: auto;
+}
+
+.table small {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--color-text-secondary);
+}
+
+.error {
+    color: #9e2439;
+}
