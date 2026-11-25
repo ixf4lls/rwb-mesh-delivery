@@ -43,18 +43,21 @@ export const deliveryApi = meshApi.injectEndpoints({
             providesTags: ['Orders'],
         }),
         listModelReturns: builder.infiniteQuery<Schemas['ReturnPage'], OrderScope, string | undefined>({
+            providesTags: ['Returns'],
             infiniteQueryOptions: { initialPageParam: undefined, getNextPageParam: (last) => last.nextCursor },
             query: ({ queryArg: { demoRunId, orderId }, pageParam }) => ({
                 url: '/returns', params: { orderId, cursor: pageParam }, headers: scopedHeaders(demoRunId),
             }),
         }),
         listModelIncidents: builder.infiniteQuery<Schemas['IncidentPage'], OrderScope, string | undefined>({
+            providesTags: ['Incidents'],
             infiniteQueryOptions: { initialPageParam: undefined, getNextPageParam: (last) => last.nextCursor },
             query: ({ queryArg: { demoRunId, orderId }, pageParam }) => ({
                 url: '/incidents', params: { orderId, cursor: pageParam }, headers: scopedHeaders(demoRunId),
             }),
         }),
         listModelStorage: builder.infiniteQuery<Schemas['StorageCasePage'], Query<operations['listStorageCases']['parameters']['query']>, string | undefined>({
+            providesTags: ['StorageCases'],
             infiniteQueryOptions: { initialPageParam: undefined, getNextPageParam: (last) => last.nextCursor },
             query: ({ queryArg: { demoRunId, ...params }, pageParam }) => ({
                 url: '/storage-cases', params: { ...params, cursor: pageParam }, headers: scopedHeaders(demoRunId),
@@ -69,11 +72,13 @@ export const deliveryApi = meshApi.injectEndpoints({
             invalidatesTags: (run) => run ? ['DemoContext'] : [],
         }),
         getDeliveryPointEconomics: builder.query<Schemas['PointEconomics'], DemoScope & { pointId: string; from: string; to: string }>({
+            providesTags: ['Economics'],
             query: ({ pointId, demoRunId, ...params }) => ({
                 url: `/pickup-points/${encodeURIComponent(pointId)}/economics`, params, headers: scopedHeaders(demoRunId),
             }),
         }),
         getDeliveryMarketplaceEconomics: builder.query<Schemas['MarketplaceEconomics'], DemoScope & { from: string; to: string }>({
+            providesTags: ['Economics'],
             query: ({ demoRunId, ...params }) => ({ url: '/marketplace/economics', params, headers: scopedHeaders(demoRunId) }),
         }),
     }),

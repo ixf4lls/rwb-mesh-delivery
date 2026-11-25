@@ -2,6 +2,7 @@ import type { DemoRun } from '../../api/deliveryApi';
 import { formatDate } from '../../functions/formatDate';
 import { useDeliveryDataset } from '../../hooks/useDeliveryDataset';
 import { Button } from '../Button/Button';
+import { DemoClock } from '../DemoClock/DemoClock';
 import { FormField } from '../FormField/FormField';
 import { QueryNotice } from '../QueryNotice/QueryNotice';
 import styles from './DeliveryDataset.module.css';
@@ -25,6 +26,7 @@ export function DeliveryDataset({ run }: { run: DemoRun }) {
             </form>
             {action.error && <p role="alert">{action.error}</p>}
             {datasets.isError && <QueryNotice error={datasets.error} onRetry={datasets.refetch} />}
+            <DemoClock run={run} />
         </details>
     );
 }

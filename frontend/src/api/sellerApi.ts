@@ -28,6 +28,7 @@ export const sellerApi = meshApi.injectEndpoints({
             providesTags: ['Batches'],
         }),
         getSellerEconomics: builder.query<SellerEconomics, SellerScope & SellerPeriod>({
+            providesTags: ['Economics'],
             query: ({ sellerId, demoRunId, ...params }) => ({
                 url: `/sellers/${encodeURIComponent(sellerId)}/economics`,
                 params,
@@ -39,7 +40,7 @@ export const sellerApi = meshApi.injectEndpoints({
                 url: `/sellers/${encodeURIComponent(sellerId)}/orders/${encodeURIComponent(orderId)}/economics`,
                 headers: scopedHeaders(demoRunId),
             }),
-            providesTags: ['Orders'],
+            providesTags: ['Orders', 'Economics'],
         }),
     }),
 });

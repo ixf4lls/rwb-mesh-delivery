@@ -25,7 +25,7 @@ type OperationArgs = OperationRequest['parameters']['path'] & NonNullable<Operat
 
 export const meshApi = createApi({
     reducerPath: 'meshApi',
-    tagTypes: ['Capacity', 'Products', 'Batches', 'Orders', 'OrderRoute', 'DemoContext'],
+    tagTypes: ['Capacity', 'Products', 'Batches', 'Orders', 'OrderRoute', 'DemoContext', 'Returns', 'Incidents', 'StorageCases', 'Notices', 'Economics'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
         timeout: 10000,

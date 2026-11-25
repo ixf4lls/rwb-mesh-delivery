@@ -9,6 +9,7 @@ import { DeliveryDataset } from '../DeliveryDataset/DeliveryDataset';
 import { DeliveryEvents } from '../DeliveryEvents/DeliveryEvents';
 import { DeliveryFinancials } from '../DeliveryFinancials/DeliveryFinancials';
 import { DeliveryGraph } from '../DeliveryGraph/DeliveryGraph';
+import { NoticeInbox } from '../NoticeInbox/NoticeInbox';
 import { QueryNotice } from '../QueryNotice/QueryNotice';
 import { RouteAnalytics } from '../RouteAnalytics/RouteAnalytics';
 import { RouteNodeDetails } from '../RouteNodeDetails/RouteNodeDetails';
@@ -52,7 +53,8 @@ function DeliveryModelPanel({ demoRunId, clock }: { demoRunId?: string; clock?: 
                     onSelect={model.chooseOption} onReserve={() => void model.reserveOrder()} />
             </div>
             <RouteAnalytics quote={model.availableQuote} shipments={model.shipments} points={model.nodeMap} />
-            <DeliveryEvents model={model} demoRunId={demoRunId} />
+            <DeliveryEvents model={model} demoRunId={demoRunId} clock={clock} />
+            <NoticeInbox demoRunId={demoRunId} />
             {order && <DeliveryFinancials key={order.id} order={order} clock={clock} demoRunId={demoRunId} />}
             <details className={styles.criteria}>
                 <summary>Условия модели</summary>

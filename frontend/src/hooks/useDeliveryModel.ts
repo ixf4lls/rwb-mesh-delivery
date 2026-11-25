@@ -32,6 +32,7 @@ export function useDeliveryModel(demoRunId?: string) {
     const pointsList = points.currentData?.pages.flatMap(({ items }) => items) ?? [];
     const productList = products.currentData?.pages.flatMap(({ items }) => items) ?? [];
     const destinationPoints = pointsList.filter(({ node, acceptsOrders }) => node.active && acceptsOrders && (!cityId || node.cityId === cityId));
+    const returnPoints = pointsList.filter(({ node, acceptsReturns }) => node.active && acceptsReturns).map(({ node }) => node);
     const nodeMap = new Map(pointsList.map(({ node }) => [node.id, node]));
     const effectivePointId = destinationPoints.some(({ node }) => node.id === pointId) ? pointId : '';
     const orderScope = mode === 'order' && orderId ? { orderId, demoRunId } : skipToken;
@@ -120,7 +121,7 @@ export function useDeliveryModel(demoRunId?: string) {
         mode, quote, availableQuote, optionId, chooseOption, selectedOption, calculate, quoteCommand, inputError, reservation, reserveOrder, canReserve,
         order, orderId, orderQuery, route, setOrderIdForView, incidents, returns, returnList, returnId, activeReturn, activeReturnOption,
         selectReturn: (id: string) => { setReturnId(id); selectNode(''); },
-        shipments, variant, graphKey, sellersByProduct, nodeMap, nodeId, selectNode,
+        shipments, variant, graphKey, sellersByProduct, nodeMap, nodeId, selectNode, returnPoints,
     } as const;
 }
 

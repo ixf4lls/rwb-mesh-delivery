@@ -1,0 +1,41 @@
+.workflow, .summary, .form, .form fieldset {
+    display: grid;
+    min-width: 0;
+    gap: 0.75rem;
+}
+
+.summary {
+    gap: 0.2rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-control);
+    background: var(--color-accent-soft);
+    overflow-wrap: anywhere;
+}
+
+.summary span {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.form {
+    margin-top: 0.75rem;
+}
+
+.form p, .form fieldset {
+    margin: 0;
+}
+
+.form fieldset {
+    padding: 0;
+    border: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.error {
+    color: #9e2439;
+}

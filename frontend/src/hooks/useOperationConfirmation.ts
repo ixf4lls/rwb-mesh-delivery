@@ -5,8 +5,8 @@ import { operationIdFromLocation } from '../functions/operationLocation';
 export function useOperationConfirmation(demoRunId?: string) {
     const [readOperation] = meshApi.useLazyGetOperationQuery();
 
-    return async function confirm(accepted: AcceptedOperation) {
-        const operationId = operationIdFromLocation(accepted.location, accepted.requestUrl, accepted.operation.id);
+    return async function confirm(accepted: AcceptedOperation, resourcePath?: string) {
+        const operationId = operationIdFromLocation(accepted.location, accepted.requestUrl, accepted.operation.id, resourcePath);
 
         for (let attempt = 0; attempt < 20; attempt += 1) {
             const operation = await readOperation({ operationId, 'X-Demo-Run-Id': demoRunId }).unwrap();
