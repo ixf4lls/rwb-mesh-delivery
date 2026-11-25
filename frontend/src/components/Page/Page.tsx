@@ -1,0 +1,20 @@
+import type { ReactNode } from 'react';
+import { Link } from 'react-router';
+import styles from './Page.module.css';
+
+type PageProps = {
+    title: string;
+    children?: ReactNode;
+};
+
+export function Page({ title, children }: PageProps) {
+    return (
+        <main className={styles.page}>
+            <header className={styles.header}>
+                <Link className={styles.brand} to="/">RWB Mesh Delivery</Link>
+            </header>
+            <h1 className={styles.title}>{title}</h1>
+            {children}
+        </main>
+    );
+}

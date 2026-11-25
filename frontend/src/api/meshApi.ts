@@ -1,0 +1,46 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { paths } from './schema.generated';
+
+export type ApiContext = {
+    getAccessToken?: () => string | undefined;
+};
+
+type SessionResponse = paths['/me']['get']['responses'][200]['content']['application/json'];
+type DemoContextResponse = paths['/demo/context']['get']['responses'][200]['content']['application/json'];
+type OperationRequest = paths['/operations/{operationId}']['get'];
+type OperationResponse = OperationRequest['responses'][200]['content']['application/json'];
+type OperationArgs = OperationRequest['parameters']['path'] & NonNullable<OperationRequest['parameters']['header']>;
+
+export const meshApi = createApi({
+    reducerPath: 'meshApi',
+    baseQuery: fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_API_BASE_URL || '/api/v1',
+        responseHandler: 'content-type',
+        isJsonContentType: (headers) => /\bapplication\/(?:[\w.-]+\+)?json\b/i.test(headers.get('content-type') ?? ''),
+        prepareHeaders: (headers, { extra }) => {
+            const context = extra as ApiContext | undefined;
+            const token = context?.getAccessToken?.();
+
+            headers.set('Accept', 'application/json, application/problem+json');
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+
+            return headers;
+        },
+    }),
+    endpoints: (builder) => ({
+        getCurrentSession: builder.query<SessionResponse, void>({
+            query: () => '/me',
+        }),
+        getDemoContext: builder.query<DemoContextResponse, void>({
+            query: () => '/demo/context',
+        }),
+        getOperation: builder.query<OperationResponse, OperationArgs>({
+            query: ({ operationId, 'X-Demo-Run-Id': demoRunId }) => ({
+                url: `/operations/${encodeURIComponent(operationId)}`,
+                headers: demoRunId ? { 'X-Demo-Run-Id': demoRunId } : undefined,
+            }),
+        }),
+    }),
+});

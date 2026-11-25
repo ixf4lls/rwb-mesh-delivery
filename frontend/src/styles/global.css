@@ -1,0 +1,34 @@
+:root {
+    --color-accent: #5932ea;
+    --color-accent-soft: #f7f5ff;
+    --color-background: #f8fafb;
+    --color-surface: #fff;
+    --color-text: #232323;
+    --color-text-secondary: #484a58;
+    --color-border: #eceef6;
+    --color-success: #0ebc93;
+    --radius-surface: 12px;
+    --radius-control: 9px;
+    --font-heading: 'Product Sans', 'Cabin', Arial, sans-serif;
+    --font-body: 'Cabin', Arial, sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-text);
+    font: 400 1rem / 1.5 var(--font-body);
+}
+
+a {
+    color: var(--color-accent);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
