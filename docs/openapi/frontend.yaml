@@ -1,0 +1,3968 @@
+openapi: 3.0.3
+info:
+  title: Mesh Delivery — API интерфейса
+  version: 0.1.0
+  description: |-
+    REST API единого интерфейса ПВЗ, продавца и диспетчера. Для приемки,
+    заказов, возвратов, исключений и аналитики используются одни модельные данные.
+    Хаб и магистраль могут исполняться симулятором, а расчеты отражаются проводками.
+
+    **Доступ.** Bearer JWT выдается внешним для приложения провайдером. GET /me
+    возвращает роли, ПВЗ и продавцов пользователя. x-roles задает допустимые роли,
+    сервер проверяет принадлежность ресурса и узел выполнения. Оператор видит свои ПВЗ,
+    продавец — свои товары, строки заказов и проводки. Диспетчер управляет логистикой.
+    Токен сервиса предназначен для отдельного внутреннего API.
+
+    **Команды.** Для отмеченных операций повторяйте то же тело с тем же Idempotency-Key.
+    Ключ относится к пользователю, контуру, методу и URL. При повторе возвращается исходный
+    результат или ID операции. Изменение тела дает 409 idempotency_mismatch. После 202
+    опрашивайте Location. Ошибка выполнения находится в error при status=failed.
+    expectedVersion защищает от устаревших действий и возвращает stale_version при конфликте.
+
+    **Данные.** Все суммы в RUB и целых копейках, отметки времени в RFC 3339.
+    Списки поддерживают непрозрачный курсор. В деморежиме доменные запросы передают
+    X-Demo-Run-Id из GET /demo/context. После переключения перечитайте данные с новым ID.
+    Проводки отражают программные расчеты.
+servers:
+  - url: /api/v1
+security:
+  - UserBearer: []
+tags:
+  - name: Сессия
+    description: Роли и привязки текущего пользователя.
+  - name: Сеть ПВЗ
+    description: Города, точки выдачи и фактическая емкость.
+  - name: Приемка и хранение
+    description: Товары, партии, остатки и стоимость хранения.
+  - name: Заказы
+    description: Котировка, создание, сборка, движение и выдача.
+  - name: Возвраты
+    description: Обратный маршрут, приемка, осмотр и корректировки.
+  - name: Инциденты
+    description: Регистрация сбоя и пересчет оставшегося маршрута.
+  - name: Длительное хранение
+    description: Порог, начисления, решение и вывоз.
+  - name: Уведомления
+    description: Журнал новых событий для продавца и ПВЗ.
+  - name: Аналитика
+    description: Финансовые результаты и расшифровка до проводки.
+  - name: Демо
+    description: Переключение подготовленных данных и тестовые часы.
+  - name: Операции
+    description: Статус принятой асинхронной команды.
+paths:
+  /me:
+    get:
+      tags: [ Сессия ]
+      summary: Получить роли и область доступа
+      operationId: getCurrentSession
+      x-roles: [ pvz_operator, seller, dispatcher, demo_admin ]
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /cities:
+    get:
+      tags: [ Сеть ПВЗ ]
+      summary: Список городов
+      operationId: listCities
+      x-roles: [ pvz_operator, seller, dispatcher, demo_admin ]
+      x-upstream: [ svcListCities ]
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CityPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /pickup-points:
+    get:
+      tags: [ Сеть ПВЗ ]
+      summary: Список ПВЗ для выбора
+      description: Возвращает точки выдачи и хранения. Доступность выбора зависит от acceptsOrders и node.active.
+      operationId: listPickupPoints
+      x-roles: [ pvz_operator, seller, dispatcher, demo_admin ]
+      x-upstream: [ svcListPickupPoints ]
+      parameters:
+        - $ref: "#/components/parameters/QCity"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupPointPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /pickup-points/{pointId}/capacity:
+    get:
+      tags: [ Сеть ПВЗ ]
+      summary: Посмотреть емкость ПВЗ
+      operationId: getPointCapacity
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcGetPointCapacity ]
+      parameters:
+        - $ref: "#/components/parameters/PointId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Capacity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /products:
+    get:
+      tags: [ Приемка и хранение ]
+      summary: Список товаров
+      operationId: listProducts
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcListProducts ]
+      parameters:
+        - $ref: "#/components/parameters/QSeller"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      tags: [ Приемка и хранение ]
+      summary: Зарегистрировать SKU продавца
+      operationId: createProduct
+      x-roles: [ seller, dispatcher ]
+      x-upstream: [ svcCreateProduct ]
+      x-error-codes: [ duplicate_seller_sku, idempotency_mismatch ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductCreate"
+            example:
+              sellerId: seller-12
+              sellerSku: mug-01
+              name: Кружка 300 мл
+              weightGrams: 270
+              slotsPerUnit: 1
+              salePriceMinor: 59000
+              unitCostMinor: 26000
+      responses:
+        "201":
+          description: Ресурс создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /batches:
+    get:
+      tags: [ Приемка и хранение ]
+      summary: Посмотреть остатки по партиям
+      operationId: listBatches
+      x-roles: [ pvz_operator, seller, dispatcher ]
+      x-upstream: [ svcListBatches ]
+      parameters:
+        - $ref: "#/components/parameters/QSeller"
+        - $ref: "#/components/parameters/QPoint"
+        - $ref: "#/components/parameters/QProduct"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BatchPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      tags: [ Приемка и хранение ]
+      summary: Принять партию на хранение целиком
+      description: Проверяет роль ПВЗ, доступную квоту и общие слоты. Приемка атомарна. Продавец берется из карточки SKU.
+      operationId: receiveBatch
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcReceiveBatch ]
+      x-error-codes: [ capacity_exceeded, storage_not_allowed, idempotency_mismatch ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchReceipt"
+            example:
+              productId: sku-41
+              storagePointId: pvz-s1
+              quantity: 5
+              externalLotRef: lot-17
+      responses:
+        "201":
+          description: Ресурс создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /batches/{batchId}:
+    get:
+      tags: [ Приемка и хранение ]
+      summary: Посмотреть партию и ее остаток
+      operationId: getBatch
+      x-roles: [ pvz_operator, seller, dispatcher ]
+      x-upstream: [ svcGetBatch ]
+      parameters:
+        - $ref: "#/components/parameters/BatchId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /batches/{batchId}/storage-cost:
+    get:
+      tags: [ Приемка и хранение ]
+      summary: Посмотреть накопленную стоимость хранения
+      operationId: getStorageCost
+      x-roles: [ pvz_operator, seller, dispatcher ]
+      x-upstream: [ svcGetStorageCost ]
+      parameters:
+        - $ref: "#/components/parameters/BatchId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorageCost"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+      description: Показывает начисленную и уже проведенную стоимость по времени активного контура.
+  /quotes:
+    post:
+      tags: [ Заказы ]
+      summary: Сравнить mesh и доставку через хаб
+      description: Сравнивает стоимость, ETA и применимость. Рекомендация учитывает запас, емкость ПВЗ и рейсов,
+        отсечки и SLA. Продавец создает котировку для собственных SKU.
+      operationId: createQuote
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcCreateQuote ]
+      x-error-codes: [ pickup_point_unavailable, idempotency_mismatch ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuoteRequest"
+            example:
+              pickupPointId: pvz-p2
+              items:
+                - productId: sku-41
+                  quantity: 1
+      responses:
+        "201":
+          description: Ресурс создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+              example:
+                id: q-31
+                request:
+                  pickupPointId: pvz-p2
+                  items:
+                    - productId: sku-41
+                      quantity: 1
+                createdAt: "2026-11-25T06:00:00Z"
+                expiresAt: "2026-11-25T06:15:00Z"
+                tariffVersionId: tariff-4
+                currency: RUB
+                options:
+                  - id: opt-mesh
+                    policy: mesh_only
+                    feasible: true
+                    reasons:
+                      - code: local_stock
+                        message: Партия доступна в ПВЗ хранения
+                        nodeId: pvz-s1
+                      - code: lower_cost
+                        message: Есть место в городском рейсе без дополнительного заезда
+                    mode: city_mesh
+                    estimatedCostMinor: 1700
+                    buyerFeeMinor: 2900
+                    readyAt: "2026-11-25T10:30:00Z"
+                    etaMinutes: 270
+                    shipments:
+                      - id: sh-1
+                        fromNodeId: pvz-s1
+                        toNodeId: pvz-p2
+                        contents:
+                          - productId: sku-41
+                            quantity: 1
+                        readyAt: "2026-11-25T10:30:00Z"
+                        segments:
+                          - id: seg-1
+                            type: city_trip
+                            fromNodeId: pvz-s1
+                            toNodeId: pvz-p2
+                            mode: physical
+                            scheduledStartAt: "2026-11-25T10:00:00Z"
+                            scheduledEndAt: "2026-11-25T10:30:00Z"
+                            waitMinutes: 240
+                            distanceMeters: 8500
+                            estimatedCostMinor: 1700
+                            costItems:
+                              - category: city_trip
+                                amountMinor: 1700
+                            tripId: trip-24
+                            cutoffAt: "2026-11-25T09:30:00Z"
+                            requestedSlots: 1
+                            freeTripSlots: 7
+                            incrementalStops: 0
+                  - id: opt-hub
+                    policy: hub_only
+                    feasible: true
+                    reasons:
+                      - code: hub_stock
+                        message: Есть запас на региональном хабе
+                        nodeId: hub-1
+                    mode: hub
+                    estimatedCostMinor: 6500
+                    buyerFeeMinor: 5900
+                    readyAt: "2026-11-26T10:00:00Z"
+                    etaMinutes: 1680
+                    shipments:
+                      - id: sh-2
+                        fromNodeId: hub-1
+                        toNodeId: pvz-p2
+                        contents:
+                          - productId: sku-41
+                            quantity: 1
+                        readyAt: "2026-11-26T10:00:00Z"
+                        segments:
+                          - id: seg-2
+                            type: linehaul
+                            fromNodeId: hub-1
+                            toNodeId: sc-1
+                            mode: simulated
+                            scheduledStartAt: "2026-11-25T08:00:00Z"
+                            scheduledEndAt: "2026-11-26T07:00:00Z"
+                            waitMinutes: 120
+                            distanceMeters: 610000
+                            estimatedCostMinor: 4200
+                            costItems:
+                              - category: linehaul
+                                amountMinor: 4200
+                          - id: seg-3
+                            type: sorting
+                            fromNodeId: sc-1
+                            toNodeId: sc-1
+                            mode: simulated
+                            scheduledStartAt: "2026-11-26T07:30:00Z"
+                            scheduledEndAt: "2026-11-26T08:30:00Z"
+                            waitMinutes: 30
+                            distanceMeters: 0
+                            estimatedCostMinor: 1000
+                            costItems:
+                              - category: sorting
+                                amountMinor: 1000
+                          - id: seg-4
+                            type: last_mile
+                            fromNodeId: sc-1
+                            toNodeId: pvz-p2
+                            mode: physical
+                            scheduledStartAt: "2026-11-26T09:00:00Z"
+                            scheduledEndAt: "2026-11-26T10:00:00Z"
+                            waitMinutes: 30
+                            distanceMeters: 16000
+                            estimatedCostMinor: 1300
+                            costItems:
+                              - category: last_mile
+                                amountMinor: 1300
+                recommendedOptionId: opt-mesh
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /orders:
+    post:
+      tags: [ Заказы ]
+      summary: Создать заказ и зарезервировать остаток
+      description: Выбранный ПВЗ фиксируется на заказе. Резервируются все его строки и места по маршруту. При
+        конфликте интерфейс запрашивает новую котировку.
+      operationId: createOrder
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcCreateOrder ]
+      x-error-codes: [ quote_expired, route_option_unavailable, insufficient_stock, capacity_exceeded, trip_capacity_exceeded ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreate"
+            example:
+              quoteId: q-31
+              optionId: opt-mesh
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+              example:
+                id: ord_804
+                status: queued
+                createdAt: "2026-11-25T06:00:00Z"
+                updatedAt: "2026-11-25T06:00:00Z"
+                resourceType: order
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+    get:
+      tags: [ Заказы ]
+      summary: Список заказов
+      operationId: listOrders
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcListOrders ]
+      parameters:
+        - $ref: "#/components/parameters/QPoint"
+        - $ref: "#/components/parameters/QSeller"
+        - $ref: "#/components/parameters/QOrderStatus"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /orders/{orderId}:
+    get:
+      tags: [ Заказы ]
+      summary: Карточка заказа и статусы отправлений
+      operationId: getOrder
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcGetOrder ]
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /orders/{orderId}/route:
+    get:
+      tags: [ Заказы ]
+      summary: Получить текущую или предыдущую версию маршрута
+      operationId: getOrderRoute
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcGetOrderRoute ]
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/Revision"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteRevision"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      description: Возвращает версию маршрута с ценой, сроком и сегментами.
+  /orders/{orderId}/events:
+    get:
+      tags: [ Заказы ]
+      summary: Хронология заказа
+      operationId: listOrderEvents
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcListOrderEvents ]
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderEventPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      tags: [ Заказы ]
+      summary: Подтвердить операцию по заказу
+      description: Поддерживает сборку, передачу, прибытие, выдачу и отмену до начала перевозки. Сборка переводит
+        резерв в упакованный остаток. Выдача создает расчетную проводку.
+      operationId: recordOrderEvent
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcRecordOrderEvent ]
+      x-error-codes:
+        [
+          stale_version,
+          invalid_transition,
+          duplicate_transition,
+          route_revision_changed,
+          order_not_ready,
+          segment_blocked
+        ]
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FulfillmentCommand"
+            examples:
+              pack:
+                value: { type: packed, shipmentId: sh-1, expectedVersion: 1 }
+              handoff:
+                value:
+                  type: handed_over
+                  shipmentId: sh-1
+                  segmentId: seg-1
+                  expectedVersion: 2
+              arrival:
+                value:
+                  type: arrived
+                  shipmentId: sh-1
+                  segmentId: seg-1
+                  expectedVersion: 3
+              issue:
+                value: { type: issued, expectedVersion: 4 }
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /returns:
+    post:
+      tags: [ Возвраты ]
+      summary: Оформить полный или частичный возврат
+      description: Возврат возможен по выданным строкам. Резервирует доступное к возврату количество и емкость,
+        затем сохраняет обратный маршрут.
+      operationId: createReturn
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcCreateReturn ]
+      x-error-codes: [ order_not_issued, return_quantity_exceeded, route_unavailable ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReturnCreate"
+            example:
+              orderId: o-10
+              returnPointId: pvz-p2
+              reason: Товар не подошел
+              lines:
+                - orderItemId: oi-1
+                  quantity: 1
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+    get:
+      tags: [ Возвраты ]
+      summary: Список возвратов
+      operationId: listReturns
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcListReturns ]
+      parameters:
+        - $ref: "#/components/parameters/QOrder"
+        - $ref: "#/components/parameters/QPoint"
+        - $ref: "#/components/parameters/QReturnStatus"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /returns/{returnId}:
+    get:
+      tags: [ Возвраты ]
+      summary: Карточка возврата и обратный маршрут
+      operationId: getReturn
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcGetReturn ]
+      parameters:
+        - $ref: "#/components/parameters/ReturnId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Return"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /returns/{returnId}/events:
+    post:
+      tags: [ Возвраты ]
+      summary: Подтвердить приемку, перевозку или осмотр возврата
+      description: После осмотра годные единицы возвращаются в доступный остаток, остальные попадают в карантин.
+        Сторно начисляется только на возвращенные единицы. До сдачи товара возврат можно отменить с
+        освобождением резервов. При сдаче после отсечки обратный рейс подбирается заново до принятия груза.
+      operationId: recordReturnEvent
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcRecordReturnEvent ]
+      x-error-codes: [ stale_version, invalid_transition, return_quantity_mismatch ]
+      parameters:
+        - $ref: "#/components/parameters/ReturnId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReturnCommand"
+            examples:
+              dropoff:
+                value: { type: received_from_customer, expectedVersion: 1 }
+              inspection:
+                value:
+                  type: inspected
+                  expectedVersion: 4
+                  lines:
+                    - orderItemId: oi-1
+                      resellableQuantity: 1
+                      quarantinedQuantity: 0
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /incidents:
+    post:
+      tags: [ Инциденты ]
+      summary: Зафиксировать логистическую ошибку
+      operationId: createIncident
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcCreateIncident ]
+      x-error-codes: [ incident_already_open, failure_target_invalid ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncidentCreate"
+            example:
+              orderId: o-10
+              shipmentId: sh-1
+              type: trip_disrupted
+              description: Городской рейс отменен
+              failureTarget:
+                tripId: trip-24
+      responses:
+        "201":
+          description: Ресурс создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+      description: Фиксирует недоступность ресурса для незавершенного отправления и блокирует переход по проблемному
+        сегменту.
+    get:
+      tags: [ Инциденты ]
+      summary: Список логистических ошибок
+      operationId: listIncidents
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcListIncidents ]
+      parameters:
+        - $ref: "#/components/parameters/QOrder"
+        - $ref: "#/components/parameters/QIncidentStatus"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncidentPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /incidents/{incidentId}:
+    get:
+      tags: [ Инциденты ]
+      summary: Посмотреть инцидент
+      operationId: getIncident
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcGetIncident ]
+      parameters:
+        - $ref: "#/components/parameters/IncidentId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /incidents/{incidentId}/reroutes:
+    post:
+      tags: [ Инциденты ]
+      summary: Перестроить маршрут после ошибки
+      description: Пересчитывает путь от последнего подтвержденного узла. Сохраняет дельту затрат, ETA и
+        уведомление. При отсутствии пути инцидент остается в blocked.
+      operationId: rerouteIncident
+      x-roles: [ dispatcher ]
+      x-upstream: [ svcRerouteIncident ]
+      x-error-codes: [ stale_version, route_unavailable, reroute_blocked_in_transit ]
+      parameters:
+        - $ref: "#/components/parameters/IncidentId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RerouteCommand"
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /storage-cases:
+    get:
+      tags: [ Длительное хранение ]
+      summary: Список партий с длительным хранением
+      operationId: listStorageCases
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcListStorageCases ]
+      parameters:
+        - $ref: "#/components/parameters/QPoint"
+        - $ref: "#/components/parameters/QSeller"
+        - $ref: "#/components/parameters/QStorageStatus"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorageCasePage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /storage-cases/{caseId}:
+    get:
+      tags: [ Длительное хранение ]
+      summary: Посмотреть начисления и рекомендацию по партии
+      operationId: getStorageCase
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcGetStorageCase ]
+      parameters:
+        - $ref: "#/components/parameters/CaseId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorageCase"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /storage-cases/{caseId}/decisions:
+    post:
+      tags: [ Длительное хранение ]
+      summary: Оставить партию или запланировать вывоз
+      operationId: decideStorageCase
+      x-roles: [ dispatcher ]
+      x-upstream: [ svcDecideStorageCase ]
+      x-error-codes: [ stale_version, invalid_transition, no_transferable_stock, route_unavailable ]
+      parameters:
+        - $ref: "#/components/parameters/CaseId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StorageDecision"
+            example:
+              action: transfer_to_hub
+              reason: Превышен порог хранения
+              expectedVersion: 1
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /storage-cases/{caseId}/transfer-events:
+    post:
+      tags: [ Длительное хранение ]
+      summary: Подтвердить этап вывоза партии
+      description: Перемещаются свободные единицы. Их хранение на исходном ПВЗ прекращается при выбытии.
+      operationId: recordStorageTransferEvent
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcRecordStorageTransferEvent ]
+      x-error-codes: [ stale_version, invalid_transition ]
+      parameters:
+        - $ref: "#/components/parameters/CaseId"
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StorageTransferCommand"
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /notifications:
+    get:
+      tags: [ Уведомления ]
+      summary: Список уведомлений для текущей роли
+      operationId: listNotifications
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcListNotifications ]
+      parameters:
+        - $ref: "#/components/parameters/Unread"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoticePage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /notifications/{notificationId}/read:
+    put:
+      tags: [ Уведомления ]
+      summary: Отметить уведомление прочитанным
+      description: Повтор сохраняет исходное время прочтения.
+      operationId: readNotification
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcReadNotification ]
+      parameters:
+        - $ref: "#/components/parameters/NotificationId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notice"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /pickup-points/{pointId}/economics:
+    get:
+      tags: [ Аналитика ]
+      summary: Доходы, расходы и прибыль ПВЗ
+      operationId: getPointEconomics
+      x-roles: [ pvz_operator, dispatcher ]
+      x-upstream: [ svcGetPointEconomics ]
+      parameters:
+        - $ref: "#/components/parameters/PointId"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PointEconomics"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+  /sellers/{sellerId}/economics:
+    get:
+      tags: [ Аналитика ]
+      summary: Начисления и прибыль продавца за период
+      operationId: getSellerEconomics
+      x-roles: [ seller, dispatcher ]
+      x-upstream: [ svcGetSellerEconomics ]
+      parameters:
+        - $ref: "#/components/parameters/SellerId"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerEconomics"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+  /sellers/{sellerId}/orders/{orderId}/economics:
+    get:
+      tags: [ Аналитика ]
+      summary: Экономика заказа для продавца
+      operationId: getSellerOrderEconomics
+      x-roles: [ seller, dispatcher ]
+      x-upstream: [ svcGetSellerOrderEconomics ]
+      parameters:
+        - $ref: "#/components/parameters/SellerId"
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerOrderEconomics"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /marketplace/economics:
+    get:
+      tags: [ Аналитика ]
+      summary: Финансовый результат маркетплейса
+      operationId: getMarketplaceEconomics
+      x-roles: [ dispatcher ]
+      x-upstream: [ svcGetMarketplaceEconomics ]
+      parameters:
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketplaceEconomics"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+  /ledger-entries:
+    get:
+      tags: [ Аналитика ]
+      summary: Расшифровка начислений и удержаний
+      description: Сервер ограничивает записи доступными участниками. Интервал фильтруется по времени проводки.
+      operationId: listLedgerEntries
+      x-roles: [ seller, pvz_operator, dispatcher ]
+      x-upstream: [ svcListLedgerEntries ]
+      parameters:
+        - $ref: "#/components/parameters/QPartyType"
+        - $ref: "#/components/parameters/QParty"
+        - $ref: "#/components/parameters/QOrder"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LedgerPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+  /demo/datasets:
+    get:
+      tags: [ Демо ]
+      summary: Посмотреть подготовленные демонаборы
+      operationId: listDatasets
+      x-roles: [ demo_admin ]
+      x-upstream: [ svcListDatasets ]
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatasetPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /demo/context:
+    get:
+      tags: [ Демо ]
+      summary: Получить активный демозапуск и его часы
+      operationId: getDemoContext
+      x-roles: [ pvz_operator, seller, dispatcher, demo_admin ]
+      x-upstream: [ svcGetDemoContext ]
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoRun"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      description: Доступен в деморежиме. По возвращенному ID интерфейс привязывает все доменные запросы.
+  /demo/runs:
+    post:
+      tags: [ Демо ]
+      summary: Начать новый прогон выбранного набора
+      description: Активирует новый запуск с исходными данными и временем. Выбор текущего набора повторно создает
+        чистый прогон.
+      operationId: createDemoRun
+      x-roles: [ demo_admin ]
+      x-upstream: [ svcCreateDemoRun ]
+      x-error-codes: [ stale_context, dataset_unavailable ]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoRunCreate"
+            example:
+              datasetId: dense
+              expectedContextVersion: 2
+      responses:
+        "201":
+          description: Ресурс создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoRun"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /demo/clock/advances:
+    post:
+      tags: [ Демо ]
+      summary: Передвинуть тестовые часы вперед
+      description: Применяет запланированные симулируемые сегменты и проверки хранения до указанного времени. После
+        успеха обновите часы через GET /demo/context.
+      operationId: advanceDemoClock
+      x-roles: [ demo_admin ]
+      x-upstream: [ svcAdvanceDemoClock ]
+      x-error-codes: [ clock_not_forward, clock_advance_in_progress, demo_context_mismatch ]
+      parameters:
+        - $ref: "#/components/parameters/DemoRun"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClockAdvance"
+            example:
+              to: "2026-11-30T09:00:00Z"
+      responses:
+        "202":
+          description: Команда сохранена и принята в обработку.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+          headers:
+            Location:
+              description: URL статуса команды в /api/v1/operations/{operationId}.
+              required: true
+              schema: { type: string, format: uri-reference }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /operations/{operationId}:
+    get:
+      tags: [ Операции ]
+      summary: Проверить результат команды
+      operationId: getOperation
+      x-roles: [ pvz_operator, seller, dispatcher, demo_admin ]
+      x-upstream: [ svcGetOrderOperation, svcGetExceptionOperation, svcGetDemoOperation ]
+      parameters:
+        - $ref: "#/components/parameters/OperationId"
+        - $ref: "#/components/parameters/DemoRun"
+      responses:
+        "200":
+          description: Операция выполнена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Operation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      description: Доступ ограничен инициатором и назначенной ему областью. При succeeded resourceId используется
+        для чтения результата.
+components:
+  schemas:
+    Id:
+      type: string
+      description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+      minLength: 1
+      maxLength: 128
+      pattern: ^[A-Za-z0-9_-]+$
+    Problem:
+      type: object
+      required: [ type, title, status, code, traceId ]
+      properties:
+        type: { type: string, format: uri-reference }
+        title: { type: string }
+        status:
+          type: integer
+          format: int64
+          minimum: 400
+          maximum: 599
+        code:
+          type: string
+          description: Стабильный код для логики интерфейса.
+          example: capacity_exceeded
+        detail: { type: string }
+        traceId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        context: { type: object, additionalProperties: true }
+    Operation:
+      description: При succeeded присутствует resourceId. При failed присутствует error. Ресурс можно читать по его
+        типу и ID. Префиксы ord_, exc_ и demo_ направляют gateway к владельцу команды.
+      type: object
+      required: [ id, status, createdAt, updatedAt, resourceType ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        status:
+          type: string
+          enum: [ queued, running, succeeded, failed ]
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        resourceType:
+          type: string
+          enum: [ order, return, incident, storage_case, demo_run ]
+        resourceId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        error:
+          $ref: "#/components/schemas/Problem"
+    Session:
+      type: object
+      required: [ userId, roles, pvzIds, sellerIds ]
+      properties:
+        userId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [ pvz_operator, seller, dispatcher, demo_admin ]
+          minItems: 1
+        pvzIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/Id"
+        sellerIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/Id"
+    City:
+      type: object
+      required: [ id, name, timeZone ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        name: { type: string }
+        timeZone:
+          type: string
+          description: Часовой пояс IANA.
+          example: Europe/Moscow
+    Node:
+      type: object
+      required: [ id, cityId, name, kind, active, mode ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        cityId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        name: { type: string }
+        kind:
+          type: string
+          enum: [ pickup_only, storage_pvz, sorting_center, hub ]
+        address: { type: string }
+        active: { type: boolean }
+        mode:
+          type: string
+          enum: [ physical, simulated ]
+          description: Хаб и магистраль могут исполняться симулятором. Физические операции подтверждает оператор.
+      description: Длительный запас размещается в storage_pvz или hub. sorting_center предназначен для транзита.
+    PickupPoint:
+      description: Часы работы указаны в местном времени города. Дни недели идут от 1 (понедельник) до 7.
+      type: object
+      required: [ node, acceptsOrders, acceptsReturns, openingHours ]
+      properties:
+        node:
+          $ref: "#/components/schemas/Node"
+        acceptsOrders: { type: boolean }
+        acceptsReturns: { type: boolean }
+        openingHours:
+          type: array
+          items:
+            type: object
+            required: [ weekdays, opens, closes ]
+            properties:
+              weekdays:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+                  minimum: 1
+                  maximum: 7
+                minItems: 1
+                maxItems: 7
+              opens: { type: string, example: "09:00" }
+              closes: { type: string, example: "21:00" }
+    Capacity:
+      description: Свободные слоты учитывают общую емкость, квоту, обычные заказы и ранее подтвержденные входящие
+        резервы. Для выдачи с полки переход между квотами учитывается без удвоения фактического объема.
+      type: object
+      required:
+        - pointId
+        - asOf
+        - totalSlots
+        - storageQuotaSlots
+        - storageUsedSlots
+        - ordinaryUsedSlots
+        - pickupUsedSlots
+        - inboundReservedSlots
+        - availableStorageSlots
+        - availablePickupSlots
+      properties:
+        pointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        asOf: { type: string, format: date-time }
+        totalSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        storageQuotaSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        storageUsedSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        ordinaryUsedSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        pickupUsedSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        inboundReservedSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        availableStorageSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        availablePickupSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+    CityPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/City"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    PickupPointPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PickupPoint"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    ProductCreate:
+      type: object
+      required: [ sellerId, sellerSku, name, weightGrams, slotsPerUnit, salePriceMinor, unitCostMinor ]
+      properties:
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerSku: { type: string, minLength: 1, maxLength: 128 }
+        name: { type: string, minLength: 1, maxLength: 200 }
+        category: { type: string, maxLength: 100 }
+        weightGrams:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        slotsPerUnit:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        salePriceMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        unitCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+    Product:
+      type: object
+      required: [ id, sellerId, sellerSku, name, weightGrams, slotsPerUnit, salePriceMinor ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerSku: { type: string, minLength: 1, maxLength: 128 }
+        name: { type: string, minLength: 1, maxLength: 200 }
+        category: { type: string, maxLength: 100 }
+        weightGrams:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        slotsPerUnit:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        salePriceMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        unitCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+    ProductPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    SkuQuantity:
+      type: object
+      required: [ productId, quantity ]
+      properties:
+        productId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        quantity:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    BatchReceipt:
+      description: Принятая партия получает ID и время приемки из часов сервера. Входящая партия уже находится в
+        указанном ПВЗ.
+      type: object
+      required: [ productId, storagePointId, quantity ]
+      properties:
+        productId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        storagePointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        quantity:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        externalLotRef: { type: string, maxLength: 128 }
+    Batch:
+      description: Количество на полке равно сумме доступного, зарезервированного, упакованного и карантинного
+        товара. Упакованный заказ на выдачу учитывается в емкости ПВЗ.
+      type: object
+      required:
+        - id
+        - sellerId
+        - productId
+        - storagePointId
+        - receivedAt
+        - receivedQuantity
+        - availableQuantity
+        - reservedQuantity
+        - packedQuantity
+        - quarantinedQuantity
+        - usedSlots
+        - tariffVersionId
+        - storageRateMinorPerSlotDay
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        productId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        storagePointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        receivedAt: { type: string, format: date-time }
+        receivedQuantity:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        availableQuantity:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        reservedQuantity:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        packedQuantity:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        quarantinedQuantity:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        usedSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        storageRateMinorPerSlotDay:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        externalLotRef: { type: string }
+        sourceBatchId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    BatchPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Batch"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    StorageCost:
+      description: Слот-сутки считаются по полным 24-часовым периодам нахождения каждой единицы на хранении с
+        момента приемки.
+      type: object
+      required:
+        [
+          batchId,
+          from,
+          asOf,
+          billableSlotDays,
+          accruedMinor,
+          postedMinor,
+          tariffVersionId,
+          rateMinorPerSlotDay
+        ]
+      properties:
+        batchId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        from: { type: string, format: date-time }
+        asOf: { type: string, format: date-time }
+        billableSlotDays:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        accruedMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        postedMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        rateMinorPerSlotDay:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+    QuoteRequest:
+      description: Один SKU может встречаться только один раз. Цены, партии, рейсы и тарифы выбирает сервер.
+      type: object
+      required: [ pickupPointId, items ]
+      properties:
+        pickupPointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkuQuantity"
+          minItems: 1
+          maxItems: 50
+    RoutingReason:
+      type: object
+      required: [ code, message ]
+      properties:
+        code:
+          type: string
+          enum:
+            - same_pickup_point
+            - local_stock
+            - hub_stock
+            - insufficient_stock
+            - point_capacity
+            - trip_capacity
+            - node_unavailable
+            - cutoff_missed
+            - no_service
+            - sla
+            - lower_cost
+            - earliest_eta
+            - allocation_split
+            - segment_failed
+            - storage_threshold
+        message:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        nodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        tripId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    CostItem:
+      type: object
+      required: [ category, amountMinor ]
+      properties:
+        category:
+          type: string
+          enum: [ storage, handling, sorting, linehaul, city_trip, last_mile, extra_stop, other ]
+        amountMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+    Segment:
+      description: Сегменты упорядочены внутри отправления. Оценка затрат включает долю рейса и дополнительные операции.
+      type: object
+      required:
+        - id
+        - type
+        - fromNodeId
+        - toNodeId
+        - mode
+        - scheduledStartAt
+        - scheduledEndAt
+        - waitMinutes
+        - distanceMeters
+        - estimatedCostMinor
+        - costItems
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        type:
+          type: string
+          enum: [ on_site, handling, sorting, city_trip, linehaul, last_mile ]
+        fromNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        toNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        mode:
+          type: string
+          enum: [ physical, simulated ]
+          description: Хаб и магистраль могут исполняться симулятором. Физические операции подтверждает оператор.
+        scheduledStartAt: { type: string, format: date-time }
+        scheduledEndAt: { type: string, format: date-time }
+        waitMinutes:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        distanceMeters:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        estimatedCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        costItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/CostItem"
+        tripId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        cutoffAt: { type: string, format: date-time }
+        requestedSlots:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        freeTripSlots:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        incrementalStops:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+    PlannedShipment:
+      type: object
+      required: [ id, fromNodeId, toNodeId, contents, readyAt, segments ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        fromNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        toNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        contents:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkuQuantity"
+          minItems: 1
+        readyAt: { type: string, format: date-time }
+        segments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Segment"
+          minItems: 1
+    RouteOption:
+      description: Выполнимый вариант содержит маршрут, срок и оценку стоимости. Для невыполнимого варианта
+        возвращаются причины исключения. estimatedCostMinor отражает затраты моделируемого исполнения.
+        buyerFeeMinor показывает цену доставки для покупателя.
+      type: object
+      required: [ id, policy, feasible, reasons ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        policy:
+          type: string
+          enum: [ mesh_only, hub_only, hybrid ]
+        feasible: { type: boolean }
+        reasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoutingReason"
+          minItems: 1
+        mode:
+          type: string
+          enum: [ local_shelf, city_mesh, hub, mixed ]
+        estimatedCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        buyerFeeMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        readyAt: { type: string, format: date-time }
+        etaMinutes:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        shipments:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlannedShipment"
+          minItems: 1
+    Quote:
+      description: Обязательные варианты mesh_only и hub_only сравниваются для одной корзины. hybrid добавляется при
+        разделении источников. Резерв создается при оформлении заказа. Рекомендация отсутствует, если все
+        варианты исключены.
+      type: object
+      required: [ id, request, createdAt, expiresAt, tariffVersionId, currency, options ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        request:
+          $ref: "#/components/schemas/QuoteRequest"
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        currency:
+          type: string
+          enum: [ RUB ]
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/RouteOption"
+          minItems: 2
+        recommendedOptionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    FailureTarget:
+      description: Требуется хотя бы один идентификатор. Исключенные ресурсы применяются с учетом фактического места
+        груза.
+      type: object
+      properties:
+        nodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        tripId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    MovementQuote:
+      type: object
+      required: [ id, expiresAt, tariffVersionId, options ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expiresAt: { type: string, format: date-time }
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        options:
+          type: array
+          items:
+            type: object
+            required: [ id, estimatedCostMinor, readyAt, shipments, reasons ]
+            properties:
+              id:
+                type: string
+                description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+                minLength: 1
+                maxLength: 128
+                pattern: ^[A-Za-z0-9_-]+$
+              estimatedCostMinor:
+                type: integer
+                format: int64
+                minimum: 0
+                description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+              readyAt: { type: string, format: date-time }
+              shipments:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlannedShipment"
+                minItems: 1
+              reasons:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoutingReason"
+                minItems: 1
+        exclusions:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoutingReason"
+      description: При отсутствии маршрута список options пуст, а exclusions содержит причины.
+    RouteRevision:
+      description: Содержит действующий план с сохраненными пройденными сегментами. Доплата или экономия оценивается
+        по еще не пройденным сегментам.
+      type: object
+      required:
+        [
+          revision,
+          selectedOptionId,
+          tariffVersionId,
+          expectedReadyAt,
+          remainingEstimatedCostMinor,
+          totalEstimatedCostMinor,
+          reasons,
+          shipments
+        ]
+      properties:
+        revision:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        selectedOptionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedReadyAt: { type: string, format: date-time }
+        remainingEstimatedCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        totalEstimatedCostMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        reasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoutingReason"
+          minItems: 1
+        shipments:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlannedShipment"
+          minItems: 1
+        incidentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        previousRevision:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        deltaCostMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        deltaEtaMinutes: { type: integer, format: int64 }
+    OrderCreate:
+      description: По умолчанию выбирается рекомендация котировки. ПВЗ и состав берутся из котировки.
+      type: object
+      required: [ quoteId ]
+      properties:
+        quoteId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        optionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    OrderLine:
+      type: object
+      required: [ id, productId, sellerId, quantity, unitPriceMinor ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        productId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        quantity:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        unitPriceMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+    OrderShipment:
+      type: object
+      required: [ id, fromNodeId, pickupPointId, lastKnownNodeId, status ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        fromNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        pickupPointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        lastKnownNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        status:
+          type: string
+          enum: [ reserved, packed, in_transit, at_node, ready, issued, canceled ]
+        activeSegmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        nextSegmentId:
+          type: string
+          description: Ближайший запланированный сегмент до начала движения.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+      description: lastKnownNodeId содержит последний подтвержденный узел. Во время перевозки дальнейшее положение
+        неизвестно.
+    Order:
+      description: Выдача возможна только когда все отправления в выбранном ПВЗ. Заказ хранит исходное обещание
+        покупателю и текущий прогноз. В роли продавца строки и отправления ограничены его товарами, статусы и
+        сроки относятся к заказу целиком.
+      type: object
+      required:
+        - id
+        - version
+        - status
+        - pickupPointId
+        - lines
+        - shipments
+        - routeRevision
+        - quoteId
+        - buyerFeeMinor
+        - promisedReadyAt
+        - estimatedReadyAt
+        - createdAt
+        - settlementStatus
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        status:
+          type: string
+          enum: [ reserved, packing, in_transit, ready, issued, canceled ]
+        pickupPointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderLine"
+          minItems: 1
+        shipments:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderShipment"
+          minItems: 1
+        routeRevision:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        quoteId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        buyerFeeMinor:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Начисление по модели на asOf, в копейках. Включает опубликованную часть.
+        promisedReadyAt: { type: string, format: date-time }
+        estimatedReadyAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+        issuedAt: { type: string, format: date-time }
+        settlementStatus:
+          type: string
+          enum: [ not_due, pending, posted ]
+    OrderPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    PackEvent:
+      type: object
+      required: [ type, shipmentId, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ packed ]
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    HandoffEvent:
+      type: object
+      required: [ type, shipmentId, segmentId, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ handed_over ]
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    ArrivalEvent:
+      type: object
+      required: [ type, shipmentId, segmentId, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ arrived ]
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    IssueEvent:
+      type: object
+      required: [ type, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ issued ]
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    CancelEvent:
+      type: object
+      required: [ type, expectedVersion, reason ]
+      properties:
+        type:
+          type: string
+          enum: [ canceled ]
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+    FulfillmentCommand:
+      oneOf:
+        - $ref: "#/components/schemas/PackEvent"
+        - $ref: "#/components/schemas/HandoffEvent"
+        - $ref: "#/components/schemas/ArrivalEvent"
+        - $ref: "#/components/schemas/IssueEvent"
+        - $ref: "#/components/schemas/CancelEvent"
+      discriminator:
+        propertyName: type
+        mapping:
+          packed: "#/components/schemas/PackEvent"
+          handed_over: "#/components/schemas/HandoffEvent"
+          arrived: "#/components/schemas/ArrivalEvent"
+          issued: "#/components/schemas/IssueEvent"
+          canceled: "#/components/schemas/CancelEvent"
+      description: Передаются данные перехода. Роль и узел оператора сверяются с текущим сегментом.
+    OrderEvent:
+      type: object
+      required: [ id, type, occurredAt, orderVersion, mode ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        type:
+          type: string
+          enum: [ created, packed, handed_over, arrived, issued, canceled, rerouted ]
+        occurredAt: { type: string, format: date-time }
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        mode:
+          type: string
+          enum: [ physical, simulated ]
+          description: Хаб и магистраль могут исполняться симулятором. Физические операции подтверждает оператор.
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        nodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    OrderEventPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderEvent"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    ReturnLineRequest:
+      type: object
+      required: [ orderItemId, quantity ]
+      properties:
+        orderItemId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        quantity:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    ReturnCreate:
+      type: object
+      required: [ orderId, returnPointId, reason, lines ]
+      properties:
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        returnPointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReturnLineRequest"
+          minItems: 1
+          maxItems: 50
+    Return:
+      type: object
+      required:
+        - id
+        - orderId
+        - returnPointId
+        - inspectionNodeId
+        - status
+        - version
+        - lines
+        - route
+        - selectedOptionId
+        - settlementStatus
+        - createdAt
+        - dropoffBy
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        returnPointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        inspectionNodeId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        status:
+          type: string
+          enum: [ awaiting_dropoff, at_return_point, in_transit, awaiting_inspection, closed, canceled ]
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReturnLineRequest"
+          minItems: 1
+        route:
+          $ref: "#/components/schemas/MovementQuote"
+        selectedOptionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        settlementStatus:
+          type: string
+          enum: [ not_due, pending, posted ]
+        createdAt: { type: string, format: date-time }
+        closedAt: { type: string, format: date-time }
+        dropoffBy:
+          type: string
+          description: До этого времени сохраняются предварительные резервы.
+          format: date-time
+      description: Срок сдачи определяется политикой возврата. По истечении срока неподтвержденный возврат
+        отменяется с освобождением резервов.
+    ReturnPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Return"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    ReturnDropoff:
+      type: object
+      required: [ type, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ received_from_customer ]
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    MovementHandoff:
+      type: object
+      required: [ type, segmentId, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ handed_over ]
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    MovementArrival:
+      type: object
+      required: [ type, segmentId, expectedVersion ]
+      properties:
+        type:
+          type: string
+          enum: [ arrived ]
+        segmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    ReturnInspection:
+      type: object
+      required: [ type, expectedVersion, lines ]
+      properties:
+        type:
+          type: string
+          enum: [ inspected ]
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        lines:
+          type: array
+          items:
+            type: object
+            required: [ orderItemId, resellableQuantity, quarantinedQuantity ]
+            properties:
+              orderItemId:
+                type: string
+                description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+                minLength: 1
+                maxLength: 128
+                pattern: ^[A-Za-z0-9_-]+$
+              resellableQuantity:
+                type: integer
+                format: int64
+                minimum: 0
+                description: Количество обработанных этой точкой возвратов за период.
+              quarantinedQuantity:
+                type: integer
+                format: int64
+                minimum: 0
+                description: Количество обработанных этой точкой возвратов за период.
+          minItems: 1
+    ReturnCommand:
+      oneOf:
+        - $ref: "#/components/schemas/ReturnDropoff"
+        - $ref: "#/components/schemas/MovementHandoff"
+        - $ref: "#/components/schemas/MovementArrival"
+        - $ref: "#/components/schemas/ReturnInspection"
+        - $ref: "#/components/schemas/ReturnCancel"
+      discriminator:
+        propertyName: type
+        mapping:
+          received_from_customer: "#/components/schemas/ReturnDropoff"
+          handed_over: "#/components/schemas/MovementHandoff"
+          arrived: "#/components/schemas/MovementArrival"
+          inspected: "#/components/schemas/ReturnInspection"
+          canceled: "#/components/schemas/ReturnCancel"
+    StorageTransferCommand:
+      oneOf:
+        - $ref: "#/components/schemas/MovementHandoff"
+        - $ref: "#/components/schemas/MovementArrival"
+      discriminator:
+        propertyName: type
+        mapping:
+          handed_over: "#/components/schemas/MovementHandoff"
+          arrived: "#/components/schemas/MovementArrival"
+      description: Прибытие в хаб подтверждает завершение вывоза. Для симулируемого узла это делает demo.
+    IncidentCreate:
+      type: object
+      required: [ orderId, shipmentId, type, failureTarget, description ]
+      properties:
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        type:
+          type: string
+          enum: [ node_unavailable, trip_disrupted, segment_failed ]
+        failureTarget:
+          $ref: "#/components/schemas/FailureTarget"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+    Incident:
+      type: object
+      required:
+        - id
+        - orderId
+        - shipmentId
+        - type
+        - failureTarget
+        - description
+        - status
+        - createdAt
+        - updatedAt
+        - oldRouteRevision
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        shipmentId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        type:
+          type: string
+          enum: [ node_unavailable, trip_disrupted, segment_failed ]
+        failureTarget:
+          $ref: "#/components/schemas/FailureTarget"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        status:
+          type: string
+          enum: [ open, blocked, resolved ]
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        oldRouteRevision:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        newRouteRevision:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        blockage:
+          $ref: "#/components/schemas/Problem"
+    IncidentPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Incident"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    RerouteCommand:
+      type: object
+      required: [ expectedOrderVersion ]
+      properties:
+        expectedOrderVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    StorageDecision:
+      description: keep требует будущую дату повторной проверки. Для transfer_to_hub система выбирает хаб и
+        проверяет вместимость.
+      type: object
+      required: [ action, reason, expectedVersion ]
+      properties:
+        action:
+          type: string
+          enum: [ keep, transfer_to_hub ]
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        recheckAt: { type: string, format: date-time }
+    StorageCase:
+      type: object
+      required:
+        - id
+        - batchId
+        - pointId
+        - sellerId
+        - status
+        - version
+        - detectedAt
+        - thresholdDays
+        - ageDays
+        - availableQuantity
+        - cost
+        - recommendation
+        - reason
+        - lastCheckedAt
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        batchId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        pointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        status:
+          type: string
+          enum: [ open, deferred, transfer_planned, in_transit, closed ]
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        detectedAt: { type: string, format: date-time }
+        thresholdDays:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        ageDays:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        availableQuantity:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        cost:
+          $ref: "#/components/schemas/StorageCost"
+        recommendation:
+          type: string
+          enum: [ keep, transfer_to_hub ]
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        nextCheckAt: { type: string, format: date-time }
+        decision:
+          $ref: "#/components/schemas/StorageDecision"
+        route:
+          $ref: "#/components/schemas/MovementQuote"
+        selectedOptionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        lastCheckedAt: { type: string, format: date-time }
+      description: В статусе deferred проверяется снова в nextCheckAt. Запланированный вывоз относится только к
+        зарезервированным свободным единицам.
+    StorageCasePage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/StorageCase"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    Notice:
+      type: object
+      required: [ id, type, resourceType, resourceId, createdAt, message ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        type:
+          type: string
+          enum: [ route_changed, reroute_blocked, long_storage, storage_action ]
+        resourceType:
+          type: string
+          enum: [ order, incident, storage_case ]
+        resourceId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        createdAt: { type: string, format: date-time }
+        message:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+        readAt: { type: string, format: date-time }
+      description: Получатель определяется по действующей связи с продавцом и ПВЗ на момент события.
+    NoticePage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Notice"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    LedgerEntry:
+      description: Положительная сумма увеличивает финансовый результат участника, отрицательная уменьшает. Сторно
+        ссылается на исходную запись.
+      type: object
+      required: [ id, partyType, partyId, category, amountMinor, bookedAt, tariffVersionId, sourceEventId ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        partyType:
+          type: string
+          enum: [ pvz, seller, marketplace ]
+        partyId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        category:
+          type: string
+          enum:
+            - sale
+            - delivery_fee
+            - commission
+            - storage_fee
+            - operation_reward
+            - logistics_cost
+            - operating_cost
+            - cost_of_goods
+            - return_adjustment
+            - penalty
+            - bonus
+        amountMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        bookedAt: { type: string, format: date-time }
+        tariffVersionId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sourceEventId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        batchId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        returnId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        originalEntryId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+    LedgerPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/LedgerEntry"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    Period:
+      type: object
+      required: [ from, to ]
+      properties:
+        from: { type: string, format: date-time }
+        to: { type: string, format: date-time }
+      description: Полуоткрытый интервал [from, to).
+    EconomicsLine:
+      type: object
+      required: [ category, amountMinor ]
+      properties:
+        category: { type: string }
+        amountMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+    PointEconomics:
+      description: Расходы и удержания показываются положительными, если уменьшают результат, и отрицательными при
+        сторно. Прибыль = вознаграждение − расходы − удержания.
+      type: object
+      required:
+        - pointId
+        - period
+        - currency
+        - postedThrough
+        - rewardMinor
+        - operatingCostMinor
+        - deductionsMinor
+        - profitMinor
+        - issuedOrders
+        - processedReturns
+        - breakdown
+      properties:
+        pointId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        period:
+          $ref: "#/components/schemas/Period"
+        currency:
+          type: string
+          enum: [ RUB ]
+        postedThrough: { type: string, format: date-time }
+        rewardMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        operatingCostMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        deductionsMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        profitMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        issuedOrders:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        processedReturns:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/EconomicsLine"
+    SellerEconomics:
+      description: Начисление = продажи − удержания. Прибыль = начисление − себестоимость. Возвраты входят в период
+        по дате корректировки.
+      type: object
+      required:
+        - sellerId
+        - period
+        - currency
+        - postedThrough
+        - salesMinor
+        - deductionsMinor
+        - accrualMinor
+        - goodsCostMinor
+        - profitMinor
+        - breakdown
+      properties:
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        period:
+          $ref: "#/components/schemas/Period"
+        currency:
+          type: string
+          enum: [ RUB ]
+        postedThrough: { type: string, format: date-time }
+        salesMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        deductionsMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        accrualMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        goodsCostMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        profitMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/EconomicsLine"
+    SellerOrderEconomics:
+      description: Детализация учитывает только строки и проводки указанного продавца. При pending суммы отражают
+        уже опубликованные проводки.
+      type: object
+      required:
+        - orderId
+        - sellerId
+        - currency
+        - settlementStatus
+        - salesMinor
+        - deductionsMinor
+        - accrualMinor
+        - goodsCostMinor
+        - profitMinor
+        - breakdown
+      properties:
+        orderId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        sellerId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        currency:
+          type: string
+          enum: [ RUB ]
+        settlementStatus:
+          type: string
+          enum: [ not_due, pending, posted ]
+        salesMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        deductionsMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        accrualMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        goodsCostMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        profitMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/EconomicsLine"
+    MarketplaceEconomics:
+      description: Доходы и расходы содержат только долю площадки. Встречные записи ПВЗ и продавца повторно не
+        суммируются.
+      type: object
+      required: [ period, currency, postedThrough, revenueMinor, expenseMinor, profitMinor, breakdown ]
+      properties:
+        period:
+          $ref: "#/components/schemas/Period"
+        currency:
+          type: string
+          enum: [ RUB ]
+        postedThrough: { type: string, format: date-time }
+        revenueMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        expenseMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        profitMinor:
+          type: integer
+          format: int64
+          description: Сумма в целых копейках со знаком.
+        breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/EconomicsLine"
+    Dataset:
+      type: object
+      required: [ id, name, summary, status, seed, initialClock, pointCount, orderCount ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        name: { type: string }
+        summary: { type: string }
+        status:
+          type: string
+          enum: [ ready, unavailable ]
+        seed: { type: integer, format: int64 }
+        initialClock: { type: string, format: date-time }
+        pointCount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+        orderCount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+    DatasetPage:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dataset"
+        nextCursor:
+          type: string
+          description: Следующая страница. Поле отсутствует в конце выдачи.
+    DemoRunCreate:
+      type: object
+      required: [ datasetId, expectedContextVersion ]
+      properties:
+        datasetId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        expectedContextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Количество обработанных этой точкой возвратов за период.
+    DemoRun:
+      type: object
+      required: [ id, datasetId, startedAt, clock, contextVersion ]
+      properties:
+        id:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        datasetId:
+          type: string
+          description: Версия тарифа обратной обработки. Сторно исходной продажи берется из оригинальных проводок.
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9_-]+$
+        startedAt: { type: string, format: date-time }
+        clock: { type: string, format: date-time }
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+    ClockAdvance:
+      description: Абсолютное тестовое время должно быть позже текущего. Повтор передается с прежним ключом.
+      type: object
+      required: [ to ]
+      properties:
+        to: { type: string, format: date-time }
+    ReturnCancel:
+      type: object
+      required: [ type, expectedVersion, reason ]
+      properties:
+        type:
+          type: string
+          enum: [ canceled ]
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Обоснование решения диспетчера.
+  parameters:
+    PointId:
+      name: pointId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    BatchId:
+      name: batchId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    OperationId:
+      name: operationId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    ReturnId:
+      name: returnId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    IncidentId:
+      name: incidentId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    CaseId:
+      name: caseId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    NotificationId:
+      name: notificationId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    SellerId:
+      name: sellerId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Непрозрачный курсор для тех же фильтров и демозапуска.
+      schema: { type: string, maxLength: 2048 }
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 200
+        default: 50
+    From:
+      name: from
+      in: query
+      required: true
+      description: Начало интервала включительно.
+      schema: { type: string, format: date-time }
+    To:
+      name: to
+      in: query
+      required: true
+      description: Конец интервала исключительно.
+      schema: { type: string, format: date-time }
+    DemoRun:
+      name: X-Demo-Run-Id
+      in: header
+      required: false
+      description: Обязателен для доменных вызовов в деморежиме. Передается во внутренние вызовы и фоновые команды.
+      schema:
+        $ref: "#/components/schemas/Id"
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Повтор команды отправляется с тем же ключом и телом.
+      schema: { type: string, minLength: 1, maxLength: 128 }
+    QCity:
+      name: cityId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    QSeller:
+      name: sellerId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    QPoint:
+      name: pointId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    QProduct:
+      name: productId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    QOrder:
+      name: orderId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    QOrderStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ reserved, packing, in_transit, ready, issued, canceled ]
+    QReturnStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ awaiting_dropoff, at_return_point, in_transit, awaiting_inspection, closed, canceled ]
+    QIncidentStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ open, blocked, resolved ]
+    QStorageStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ open, deferred, transfer_planned, in_transit, closed ]
+    Unread:
+      name: unread
+      in: query
+      required: false
+      schema: { type: boolean }
+    QPartyType:
+      name: partyType
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ pvz, seller, marketplace ]
+    QParty:
+      name: partyId
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Id"
+    Revision:
+      name: revision
+      in: query
+      required: false
+      description: Версия маршрута. По умолчанию действующая версия.
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        description: Версия состояния заказа для expectedVersion. Меняется также при пересчете маршрута.
+  responses:
+    BadRequest:
+      description: Неверный JSON, параметр или заголовок.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Unauthorized:
+      description: Токен отсутствует или недействителен.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Forbidden:
+      description: Недостаточно прав или ресурс вне области доступа.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    NotFound:
+      description: Ресурс не найден в текущем контексте.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Conflict:
+      description: Конфликт состояния, запроса или доступной емкости.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+          examples:
+            capacity:
+              value:
+                type: urn:mesh:error:capacity_exceeded
+                title: Недостаточно места в ПВЗ
+                status: 409
+                code: capacity_exceeded
+                traceId: req-923
+                context:
+                  pointId: pvz-s1
+                  requiredSlots: 5
+                  availableSlots: 4
+            staleVersion:
+              value:
+                type: urn:mesh:error:stale_version
+                title: Версия состояния устарела
+                status: 409
+                code: stale_version
+                traceId: req-924
+                context:
+                  currentVersion: 4
+    Unprocessable:
+      description: Корректный запрос нарушает правило предметной области.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Unavailable:
+      description: Сервис временно недоступен. Повторите команду с тем же ключом.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+  securitySchemes:
+    UserBearer: { type: http, scheme: bearer, bearerFormat: JWT }

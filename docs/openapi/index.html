@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mesh Delivery API — Swagger UI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css">
+</head>
+<body>
+  <header style="padding: 1rem 2rem; font-family: system-ui">
+    <label>Контракт
+      <select id="contract">
+        <option value="frontend">Frontend API</option>
+        <option value="internal">Внутренний API</option>
+      </select>
+    </label>
+  </header>
+  <p id="status" role="status" style="padding: 0 2rem"></p>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin></script>
+  <script>
+    const contract = document.querySelector('#contract');
+    const status = document.querySelector('#status');
+    function render() {
+      if (typeof SwaggerUIBundle !== 'function') {
+        status.textContent = 'Swagger UI не загрузился. Проверьте доступ к unpkg.com.';
+        return;
+      }
+      const name = contract.value;
+      const source = window.bundledSpecs
+        ? {spec: window.bundledSpecs[name]}
+        : {url: '/' + name + '.yaml'};
+      document.querySelector('#swagger-ui').replaceChildren();
+      SwaggerUIBundle({
+        ...source,
+        dom_id: '#swagger-ui',
+        docExpansion: 'list',
+        filter: true,
+        supportedSubmitMethods: [],
+        validatorUrl: null,
+      });
+    }
+    contract.addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>
