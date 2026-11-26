@@ -42,7 +42,8 @@ export function useDeliveryModel(demoRunId?: string) {
     const returns = deliveryApi.useListModelReturnsInfiniteQuery(orderScope, { pollingInterval: 15000 });
     const incidents = deliveryApi.useListModelIncidentsInfiniteQuery(orderScope, { pollingInterval: 15000 });
     const returnList = returns.currentData?.pages.flatMap(({ items }) => items) ?? [];
-    const activeReturn = returnList.find(({ id }) => id === returnId);
+    const returnQuery = deliveryApi.useGetModelReturnQuery(order && returnId ? { returnId, demoRunId } : skipToken, { pollingInterval: 15000 });
+    const activeReturn = returnQuery.currentData?.orderId === order?.id ? returnQuery.currentData : undefined;
     const activeReturnOption = activeReturn?.route.options.find(({ id }) => id === activeReturn.selectedOptionId);
 
     const [requestQuote, quoteResult] = deliveryApi.useCreateQuoteMutation();
@@ -120,9 +121,10 @@ export function useDeliveryModel(demoRunId?: string) {
         productId, selectProduct, quantity, setQuantity, quoteNeedsRefresh,
         mode, quote, availableQuote, optionId, chooseOption, selectedOption, calculate, quoteCommand, inputError, reservation, reserveOrder, canReserve,
         order, orderId, orderQuery, route, setOrderIdForView, incidents, returns, returnList, returnId, activeReturn, activeReturnOption,
-        selectReturn: (id: string) => { setReturnId(id); selectNode(''); },
+        returnQuery, selectReturn: (id: string) => { setReturnId(id); selectNode(''); },
         shipments, variant, graphKey, sellersByProduct, nodeMap, nodeId, selectNode, returnPoints,
     } as const;
 }
 
 export type DeliveryModel = ReturnType<typeof useDeliveryModel>;
+

@@ -29,6 +29,8 @@ export function DeliveryEvents({ model, demoRunId, clock }: { model: DeliveryMod
                     </FormField>
                     {model.returns.isError && <QueryNotice error={model.returns.error} onRetry={model.returns.refetch} />}
                     {model.returns.hasNextPage && <Button variant="secondary" disabled={model.returns.isFetching} onClick={() => void model.returns.fetchNextPage()}>Ещё возвраты</Button>}
+                    {model.returnQuery.isFetching && !model.activeReturn && <QueryNotice message="Загружаем карточку возврата…" />}
+                    {model.returnQuery.isError && <QueryNotice error={model.returnQuery.error} onRetry={model.returnQuery.refetch} />}
                     <ReturnWorkflow key={`return:${model.order.id}`} order={model.order} selected={model.activeReturn} points={model.nodeMap}
                         intake={model.returnPoints} demoRunId={demoRunId} onSelect={model.selectReturn} />
                     {model.incidents.isError && <QueryNotice error={model.incidents.error} onRetry={model.incidents.refetch} />}
@@ -48,3 +50,4 @@ export function DeliveryEvents({ model, demoRunId, clock }: { model: DeliveryMod
         </div>
     );
 }
+

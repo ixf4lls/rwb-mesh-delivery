@@ -16,7 +16,7 @@
   "counts": {
     "pointCount": 150,
     "preparedOrderCount": 29872,
-    "orderIntentCount": 974,
+    "orderIntentCount": 29872,
     "lineCount": 89610,
     "cityPointCounts": {
       "yoshkar_ola": 150
@@ -24,63 +24,82 @@
     "storagePointCount": 15,
     "pointDayCount": 150,
     "sellerCount": 200,
-    "productCount": 20000
+    "productCount": 20000,
+    "orderCount": 29872
   },
   "files": [
     {
-      "path": "cities.csv",
-      "sha256": "e06a07abf40bd5d5bd9805332688b4acd89cf54f1d45bbec3217a149451da4e1",
-      "rows": 1
-    },
-    {
       "path": "nodes.csv",
-      "sha256": "affcabd3d1ec07f04837553d534d23909926ee751b5e359dd3910df8247ca1a2",
-      "rows": 2
-    },
-    {
-      "path": "districts.csv",
-      "sha256": "e963452dc5aba2d650d80655034bbac0c3be4d1e95ebcdc04eb1e4c0455f6393",
-      "rows": 10
+      "rows": 152,
+      "sha256": "ea6b2419c73f4a498f5ecbfe8b119e3fa7754d5f4c29deb6607739ebe35e269a"
     },
     {
       "path": "points.csv",
-      "sha256": "678b05fb3d92e79786e24fd0a734b4897705b9e26f0cfe40f71bd2bb7bb87487",
-      "rows": 150
+      "rows": 150,
+      "sha256": "16cfc484d5c5d8214a183b94abec4a32448599ca0e9ca756f1413328cba62a25"
+    },
+    {
+      "path": "cities.csv",
+      "rows": 1,
+      "sha256": "4e37332b440e4dc598e75ef0913cd590b50ed8820380499d532bfddc6642e8f6"
+    },
+    {
+      "path": "districts.csv",
+      "rows": 10,
+      "sha256": "64535217b8864b32c4891efb94f816dfeda98bc5aada0ef0e06c7d3aeb170aea"
     },
     {
       "path": "sellers.csv",
-      "sha256": "07fd87fab8ee5a13d4c17110531a2e32d6b1d3a863819f23a4c94746d0fb65c4",
-      "rows": 200
+      "rows": 200,
+      "sha256": "3afd3450d7f6a8dcf8dc77029a478cfaabbe068735fae21f4a334b8779a2383a"
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "aaa03313c3a0828d640461e3beecd33012a78110bed49cfa797f08d1e7efd1dc",
-      "rows": 20000
+      "rows": 20000,
+      "sha256": "0382dc44efa5b0eac16e455ea26fe266b03be580c4a378f0a592cc297dcb303a"
     },
     {
       "path": "categories.csv",
-      "sha256": "afec89a9fa7bc337ad25ebbf9bbf67367cbb5dbb8e105f2dedbd6e508494e672",
-      "rows": 4
+      "rows": 4,
+      "sha256": "03e9452574855f16b9eefd9b538b8fdb4247431b6ea889163c0e8fd4fdb18d21"
     },
     {
       "path": "products.csv",
-      "sha256": "30e729a6682bfe95a33c5d8ecc299de63e13adb4142d7939023ccdeeeddd3305",
-      "rows": 20000
+      "rows": 20000,
+      "sha256": "cef9900c73a87913716abe58c5e1d9ad36fcc251de372bd01f5fa1fdc3312000"
     },
     {
       "path": "orders.csv",
-      "sha256": "354c92faaae074e06b122adf717db28152e6fb227d0fff7e7d09eb4d1e9c263a",
-      "rows": 29872
+      "rows": 29872,
+      "sha256": "3d7a7a28f5fd130d28572488f2c27aae5d14b5559eac046f8c6f453a0f3eb954"
     },
     {
       "path": "return_intents.csv",
-      "sha256": "b439e4a2378ad1c5f96e25869c37daeddf4b9074f93d1dff25ef1735d3cac5c8",
-      "rows": 974
+      "rows": 974,
+      "sha256": "614755fe8df4e21e6443a86528610f30d9847cdbb410e393950f25c144dd1d8d"
+    },
+    {
+      "path": "trips.csv",
+      "rows": 2400,
+      "sha256": "56bde8e89aae60b7cfc37bce3a10fda2cd19f6ab5189732e2f7f66a5dc5c84ce"
+    },
+    {
+      "path": "initial_state.json",
+      "rows": 1,
+      "sha256": "f332ea39f376344498c9c2f7aa766b917982ced3a9229c236f6a19786dd28ab5"
     }
   ],
   "notes": [
     "Synthetic workload parameters; not operational geography.",
     "CSV used because Parquet writer is unavailable.",
     "All entity IDs are digit-only strings; names/codes are normalized dimensions."
-  ]
+  ],
+  "initialClock": "2026-01-05T00:00:00+03:00",
+  "runtimeGeneration": {
+    "command": "python scripts/prepare_runtime_datasets.py",
+    "seed": 42,
+    "inventory": "5 units per product, distributed over storage PVZ",
+    "capacity": "at least stock slots plus 100",
+    "transport": "bidirectional city stars and intercity chain, daily for 8 days, 200 slots, 60 minutes"
+  }
 }

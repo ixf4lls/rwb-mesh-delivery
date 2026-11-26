@@ -13,6 +13,7 @@ import (
 	"meshdelivery/internal/core"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -40,7 +41,16 @@ func New(store *core.Store, auth Auth, contracts string) (*Server, error) {
 		}
 		s.Mux.HandleFunc(ep.Method+" "+prefix+ep.Path, func(w http.ResponseWriter, r *http.Request) { s.handle(w, r, ep) })
 	}
-	s.Mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("POST /api/v1/demo/datasets/import", func(w http.ResponseWriter, r *http.Request) {
+        _, err := s.Auth.authenticate(r, endpoint{Definition: core.M{"x-roles": []string{"demo_admin"}}})
+        if err != nil { writeProblem(w, err, core.ID()); return }
+        root := os.Getenv("MESH_DATASETS_DIR")
+        if root == "" { writeProblem(w, core.Fail(503, "datasets_unavailable", "Dataset directory is not configured"), core.ID()); return }
+        items, err := core.ImportAll(r.Context(), store, root)
+        if err != nil { writeProblem(w, err, core.ID()); return }
+        write(w, 200, core.M{"items": items})
+    })
+    s.Mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
 		if e := store.Pool.Ping(r.Context()); e != nil {
 			http.Error(w, "database unavailable", 503)
 			return
@@ -55,7 +65,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Vary", "Origin")
 		w.Header().Set("Access-Control-Expose-Headers", "Location, X-Request-Id")
 		if r.Method == "OPTIONS" {
-			w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Idempotency-Key, X-Demo-Run-Id")
+			w.Header().Set("Access-Control-Allow-Headers", "Authorization, X-Demo-Role, Content-Type, Idempotency-Key, X-Demo-Run-Id")
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
 			w.WriteHeader(204)
 			return
@@ -380,3 +390,5 @@ func paginate(c core.Command, page core.M, rows []core.M) (core.M, error) {
 	page["items"] = rows[offset:end]
 	return page, nil
 }
+
+

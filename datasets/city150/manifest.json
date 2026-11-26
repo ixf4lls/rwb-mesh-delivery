@@ -27,66 +27,92 @@
   },
   "files": [
     {
-      "path": "api_examples.json",
-      "sha256": "6306d9902a62603e5f3c5d91731d4cb44c7f76744d8bc6ad1643279c264d85a4"
-    },
-    {
-      "path": "categories.csv",
-      "sha256": "eaeacb465898cb3c7b8dfd8bf652c4344a3937428b2b6847640589ab50b8da91",
-      "rows": 4
-    },
-    {
-      "path": "cities.csv",
-      "sha256": "b9cebf016d814747b750973d0741bc388ab0c144750db1aec1cdb5247e635262",
-      "rows": 1
-    },
-    {
-      "path": "districts.csv",
-      "sha256": "d6798505d2866b4551675a63cc515a743e4ab80d791f19b300400a5add2de9df",
-      "rows": 10
-    },
-    {
-      "path": "expected.json",
-      "sha256": "9badb6ca8638bf32c510ea7b759d81824daf07e786447e05a511821da7788abd"
-    },
-    {
-      "path": "network.csv",
-      "sha256": "23bc5af873595c6163ce969cacb8559ecabbcb8d3f82872f7553e262912abf0e",
-      "rows": 149
-    },
-    {
-      "path": "orders.csv",
-      "sha256": "a10a7d5e089c121d710a1ab8c857b2fd2f10f2e17a696c76b195e23697f59c2d",
-      "rows": 21000
-    },
-    {
-      "path": "peak_events.json",
-      "sha256": "c6d06934f4334cc976386eeaaee4574654a0161579238b678210e7f6c5589cb5"
-    },
-    {
-      "path": "point_day_summary.csv",
-      "sha256": "1de61495a16a2fc8f6dd3462d8e51e22eb7cd1a1361ddb4e1c8388fa5a06294d",
-      "rows": 1050
+      "path": "nodes.csv",
+      "rows": 150,
+      "sha256": "ae6799fa93a036f59bcf15010950a05b217a5509c27c3d3ec02fa845d0670459"
     },
     {
       "path": "points.csv",
-      "sha256": "abb737f88a9c413aa002d0710a18241a66ca7505a0bd8639449ded0f8fca8312",
-      "rows": 150
+      "rows": 150,
+      "sha256": "5d4c51a3390fb0776b8a5611f71f9cb2fcdf780b5035d2582c6c2e76af346986"
+    },
+    {
+      "path": "api_examples.json",
+      "rows": 3,
+      "sha256": "63553cd0f8a9edf95b16b5012cebfa77a0720ae978bd5b75f9da1f5fd66dd4e4"
+    },
+    {
+      "path": "categories.csv",
+      "rows": 4,
+      "sha256": "2713d6093a3208b007871c4cc472b876ed1b683128f22b745908a02fe1352e5a"
+    },
+    {
+      "path": "cities.csv",
+      "rows": 1,
+      "sha256": "6244fa868eabb51ce617528e7621dd05e2dd1d5f7d8a3706d5388075bee6e40e"
+    },
+    {
+      "path": "districts.csv",
+      "rows": 10,
+      "sha256": "d01f04c3a76b528370b96bce7456334fc3d42fb3fd8f668fcb9f466e1cc2ea67"
+    },
+    {
+      "path": "expected.json",
+      "rows": 1,
+      "sha256": "5554fcf8a4d6df690be857a4aa1d5ce778940a1da156b86a6596e2a169f314f5"
+    },
+    {
+      "path": "network.csv",
+      "rows": 149,
+      "sha256": "0adeabc4deb25a2339db6270236d70f775f69b74d7ff0eece8f50d57e3b8d3f5"
+    },
+    {
+      "path": "orders.csv",
+      "rows": 21000,
+      "sha256": "00dea264534609577f1a7e44eb45739ffe5e09eacb25e9511d55173bee3c1588"
+    },
+    {
+      "path": "peak_events.json",
+      "rows": 1,
+      "sha256": "2fe89e81c27064ea8debcc3d9c85f33f1d88d350c9e2c479e6c8b8ec969b92ca"
+    },
+    {
+      "path": "point_day_summary.csv",
+      "rows": 1050,
+      "sha256": "014950c4f42878cdc1556dbfa083594d4e40bb138154799925f67180f55ef3e9"
     },
     {
       "path": "products.csv",
-      "sha256": "0c804f23d358df2a422edb513a152d3f0c20307d91a8d9399f691bea9367097f",
-      "rows": 100
+      "rows": 100,
+      "sha256": "e1412f524e5c03a3c918d1a777742500ab36fb7df0608335db38282f47c94115"
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "9979e3f0f65095a05c87817b249006db5733bf853507158b9279ffa09d653947",
-      "rows": 100
+      "rows": 100,
+      "sha256": "9d542966f052e59b6641d7c4c108894dde40179d952022dade23cae9224b1863"
     },
     {
       "path": "sellers.csv",
-      "sha256": "03303cad898c17a19f10eef8be4169b55b31f90059d2b7e267b56432faa41432",
-      "rows": 10
+      "rows": 10,
+      "sha256": "8635d3478cbf4bbd34376eb37b24c64b9279b02b3e26327e805ee456b9e53961"
+    },
+    {
+      "path": "trips.csv",
+      "rows": 2384,
+      "sha256": "78f2af5b8605410bc02f1ef386ac9b4980479d951e31fb204ffdc44a19c79fec"
+    },
+    {
+      "path": "initial_state.json",
+      "rows": 1,
+      "sha256": "dcac3ba1130a7f868a26c2987646606e2b17d3d517ddba7c7de32bfc657f86b8"
     }
-  ]
+  ],
+  "initialClock": "2026-11-23T07:30:00+03:00",
+  "runtimeGeneration": {
+    "command": "python scripts/prepare_runtime_datasets.py",
+    "seed": 42,
+    "inventory": "5 units per product, distributed over storage PVZ",
+    "capacity": "at least stock slots plus 100",
+    "transport": "bidirectional city stars and intercity chain, daily for 8 days, 200 slots, 60 minutes"
+  }
 }

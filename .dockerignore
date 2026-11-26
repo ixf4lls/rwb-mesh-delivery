@@ -3,3 +3,7 @@
 frontend/dist
 tmp
 .codegraph
+
+datasets/russia10_smoke
+datasets/yoshkar_ola_city
+datasets/russia10_full

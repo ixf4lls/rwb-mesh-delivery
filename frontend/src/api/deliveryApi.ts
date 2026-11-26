@@ -42,6 +42,12 @@ export const deliveryApi = meshApi.injectEndpoints({
             query: ({ orderId, demoRunId }) => ({ url: `/orders/${encodeURIComponent(orderId)}`, headers: scopedHeaders(demoRunId) }),
             providesTags: ['Orders'],
         }),
+        getModelReturn: builder.query<Schemas['Return'], DemoScope & { returnId: string }>({
+            query: ({ returnId, demoRunId }) => ({
+                url: `/returns/${encodeURIComponent(returnId)}`, headers: scopedHeaders(demoRunId),
+            }),
+            providesTags: ['Returns'],
+        }),
         listModelReturns: builder.infiniteQuery<Schemas['ReturnPage'], OrderScope, string | undefined>({
             providesTags: ['Returns'],
             infiniteQueryOptions: { initialPageParam: undefined, getNextPageParam: (last) => last.nextCursor },
@@ -63,6 +69,9 @@ export const deliveryApi = meshApi.injectEndpoints({
                 url: '/storage-cases', params: { ...params, cursor: pageParam }, headers: scopedHeaders(demoRunId),
             }),
         }),
+        importDeliveryDatasets: builder.mutation<unknown, void>({
+            query: () => ({ url: '/demo/datasets/import', method: 'POST', timeout: 300000 }),
+        }),
         listDeliveryDatasets: builder.infiniteQuery<Schemas['DatasetPage'], void, string | undefined>({
             infiniteQueryOptions: { initialPageParam: undefined, getNextPageParam: (last) => last.nextCursor },
             query: ({ pageParam }) => ({ url: '/demo/datasets', params: { cursor: pageParam } }),
@@ -83,3 +92,5 @@ export const deliveryApi = meshApi.injectEndpoints({
         }),
     }),
 });
+
+

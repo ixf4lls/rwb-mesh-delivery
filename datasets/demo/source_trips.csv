@@ -1,0 +1,5 @@
+trip_id,trip_code,trip_type,from_node_id,to_node_id,frequency,departure_local,mode
+1050000001,line-ab-daily,intercity,1920000001,1920000003,daily,12:00,simulated
+1050000002,city-b-east,city_trip,1920000003,1500000003,daily,16:00,physical
+1050000003,city-b-west,city_trip,1920000003,1500000005,daily,16:00,physical
+1050000004,city-b-alt,city_trip,1920000003,1500000003,daily,18:00,physical

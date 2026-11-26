@@ -1,3 +1,4 @@
+import { ReturnWorkflow } from '../ReturnWorkflow/ReturnWorkflow';
 import { pvzApi } from '../../api/pvzApi';
 import type { Order } from '../../api/pvzApi';
 import { formatDate } from '../../functions/formatDate';
@@ -18,6 +19,9 @@ type PvzOrderDetailsProps = {
 };
 
 export function PvzOrderDetails({ order, pointId, demoRunId, modelClock, busy, onAction }: PvzOrderDetailsProps) {
+    const points = pvzApi.useListPickupPointsInfiniteQuery({ demoRunId });
+    const pointList = points.currentData?.pages.flatMap(({ items }) => items) ?? [];
+    const returnPoint = pointList.find(({ node, acceptsReturns }) => node.id === pointId && node.active && acceptsReturns);
     const route = pvzApi.useGetOrderRouteQuery({ orderId: order.id, revision: order.routeRevision, demoRunId });
     const plan = route.isError ? undefined : route.currentData;
     const actions = getOrderActions(order, pointId, plan);
@@ -39,6 +43,9 @@ export function PvzOrderDetails({ order, pointId, demoRunId, modelClock, busy, o
             </dl>
             {route.isError && <QueryNotice error={route.error} onRetry={route.refetch} />}
             <DataTable title="Состав заказа" columns={['Товар', 'Продавец', 'Количество']} rows={rows} emptyMessage="В заказе нет строк." />
+            {order.status === 'issued' && returnPoint && <ReturnWorkflow key={order.id} order={order}
+                points={new Map(pointList.map(({ node }) => [node.id, node]))} intake={[returnPoint.node]}
+                demoRunId={demoRunId} onSelect={() => undefined} />}
             {actions.length > 0 && (
                 <div className={styles.actions}>
                     {actions.map((action) => (

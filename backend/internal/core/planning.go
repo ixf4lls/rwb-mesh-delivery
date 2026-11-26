@@ -828,6 +828,12 @@ func makeQuoteOption(tx *Tx, request M, policy string, tariff M) (M, []M, error)
 	}
 	buyer, totalCost, marginal := int64(0), int64(0), int64(0)
 	chargedStops := map[string]bool{}
+	movingShipments := int64(0)
+	for _, shipment := range shipments {
+		if S(shipment["fromNodeId"]) != S(shipment["toNodeId"]) {
+			movingShipments++
+		}
+	}
 	for _, sh := range shipments {
 		for _, seg := range Arr(sh["segments"]) {
 			if S(seg["type"]) == "on_site" {
@@ -869,11 +875,11 @@ func makeQuoteOption(tx *Tx, request M, policy string, tariff M) (M, []M, error)
 			}
 		}
 	}
-	totalCost, e = routingProductSum(totalCost, routeRate(tariff, "handling"), int64(len(shipments)))
+	totalCost, e = routingProductSum(totalCost, routeRate(tariff, "handling"), movingShipments)
 	if e != nil {
 		return nil, nil, e
 	}
-	marginal, e = routingProductSum(marginal, routeRate(tariff, "handling"), int64(len(shipments)))
+	marginal, e = routingProductSum(marginal, routeRate(tariff, "handling"), movingShipments)
 	if e != nil {
 		return nil, nil, e
 	}

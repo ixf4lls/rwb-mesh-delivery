@@ -20,61 +20,87 @@
     "orderIntentCount": 400,
     "lineCount": 400,
     "historyRows": 4032,
-    "zeroDemandRows": 3670
+    "zeroDemandRows": 3670,
+    "orderCount": 400
   },
   "files": [
     {
-      "path": "api_examples.json",
-      "sha256": "bb9fa9aa31911cf1d039b7678b882d5f9d6f5a36da0237348e1c408ca159ef95"
-    },
-    {
-      "path": "cities.csv",
-      "sha256": "0e3ff60a303b9662f4f768edde1035bd7368584e2bafd2a6fc625f693c5616ca",
-      "rows": 1
-    },
-    {
-      "path": "demand_history.csv",
-      "sha256": "b89deecd7f4bce83d151b139e301da0c68b764ad11d9d72d51c55e531ec48feb",
-      "rows": 4032
-    },
-    {
-      "path": "expected.json",
-      "sha256": "10956d24911a8f91de1e7f7ff33e0aa0371c7b2a2305b838d1bf4467ecf6da76"
-    },
-    {
-      "path": "order_key_map.csv",
-      "sha256": "985c4f4cc30b74a03ce63c82ffcfa717e680335b3d60b923baaad5794f586323",
-      "rows": 400
-    },
-    {
-      "path": "orders.csv",
-      "sha256": "76d485bc7a2abdc9da545424c86407aa92cffb2eff9c517f6d968711dfe8f954",
-      "rows": 400
+      "path": "nodes.csv",
+      "rows": 6,
+      "sha256": "6a13a4628f229b8feb5fe83e7e763c81708051c28295895f49d44eb50a78de7b"
     },
     {
       "path": "points.csv",
-      "sha256": "f6276c2b79c6006d6cae2616e168fb2c75d48be7bafbc1b8526036311652224c",
-      "rows": 6
+      "rows": 6,
+      "sha256": "137d0f330bf4b8200889e532334c1455d53e474bc7eefa029a007bd8d5f5bf19"
+    },
+    {
+      "path": "api_examples.json",
+      "rows": 2,
+      "sha256": "6cd4370745befaf3084948de7e05ed7548e43bb17be9a59b1d8f9a397a8d4c0f"
+    },
+    {
+      "path": "cities.csv",
+      "rows": 1,
+      "sha256": "3e554453c79bc4365e83a0eeadf5f5c27459304e2a52a17df9e2164fe30e9748"
+    },
+    {
+      "path": "demand_history.csv",
+      "rows": 4032,
+      "sha256": "6b575c98eb13e465b4f862bd4e0bff3fb69b19b26f325339dd20cac8fb4efa02"
+    },
+    {
+      "path": "expected.json",
+      "rows": 1,
+      "sha256": "f232d9574c47ed84f0ea996891f325d379b806e59ff2d21543d8ba0b224d3044"
+    },
+    {
+      "path": "order_key_map.csv",
+      "rows": 400,
+      "sha256": "d01cf7326a0a27a4e0e5ae454956d8f73d2e5ece31dbec8c9e699bc09e018dba"
+    },
+    {
+      "path": "orders.csv",
+      "rows": 400,
+      "sha256": "82e7ae0a25212ab9cffd90ee0b56795c0b9710a6f42c5c989dddaba8e2b5fa88"
     },
     {
       "path": "products.csv",
-      "sha256": "83f2164953338f6f6ff060a52ae67e74fec68738db9a98fdce4d043015ea2a19",
-      "rows": 12
+      "rows": 12,
+      "sha256": "448544fa2600d9022f17cc66c308bb882da63c2d87603d1e336afbb75d897143"
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "45cb0abda7b566e908e2b1ddc557289dc3a44082e7b139f13682dedb49af3c9b",
-      "rows": 12
+      "rows": 12,
+      "sha256": "1c984b99043651951bd52757c688e0ce941f45457eb0a8e3ec9d046773f79d2e"
     },
     {
       "path": "sellers.csv",
-      "sha256": "6eefae64fe292cbf11ebde5914bca2ce6c00e8ab9fdaefbd77c767d1f0bc2f37",
-      "rows": 3
+      "rows": 3,
+      "sha256": "11eb2a9d85732e74baac1c035308bda163219500f0cca95b4a8041cdf5ac0b9c"
     },
     {
       "path": "trip_key_map.csv",
-      "sha256": "5cebed24736eb28c3900dfe6c21b79c50f4f81d560aae8e45b051da6379006cc",
-      "rows": 2
+      "rows": 2,
+      "sha256": "160665853318217911b69d44c9253c144dc2d5a58fe05d19db63eaae06399440"
+    },
+    {
+      "path": "trips.csv",
+      "rows": 80,
+      "sha256": "1ecfb45b4221e6f0041031152dd31618557773832567d5d24200cbd30de3a678"
+    },
+    {
+      "path": "initial_state.json",
+      "rows": 1,
+      "sha256": "89215930c20bac2fc9bd223e734dbae4948f96f1b9762668214261c843a23a3f"
     }
-  ]
+  ],
+  "initialClock": "2026-01-05T00:00:00Z",
+  "runtimeGeneration": {
+    "command": "python scripts/prepare_runtime_datasets.py",
+    "seed": 42,
+    "inventory": "5 units per product, distributed over storage PVZ",
+    "capacity": "at least stock slots plus 100",
+    "transport": "bidirectional city stars and intercity chain, daily for 8 days, 200 slots, 60 minutes"
+  }
 }

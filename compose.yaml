@@ -3,6 +3,8 @@ x-backend: &backend
     context: .
     dockerfile: backend/Dockerfile
   environment: &backend-env
+    MESH_AUTH_MODE: mock
+    MESH_DATASETS_DIR: /app/datasets
     MESH_DATABASE_URL: postgres://mesh:mesh@postgres:5432/mesh?sslmode=disable
     MESH_USER_JWT_SECRET: ${MESH_USER_JWT_SECRET:-local-demo-user-secret-at-least-32-characters}
     MESH_SERVICE_JWT_SECRET: ${MESH_SERVICE_JWT_SECRET:-local-demo-service-secret-different-32-characters}
@@ -33,7 +35,7 @@ services:
 
   import:
     <<: *backend
-    command: [import, --dataset, /app/backend/testdata/demo]
+    command: [import, --all, --dataset, /app/datasets]
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -78,5 +80,8 @@ services:
 
 volumes:
   postgres_data:
+
+
+
 
 

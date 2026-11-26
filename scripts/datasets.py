@@ -262,7 +262,11 @@ def main() -> int:
         if args.dataset not in mapping:
             print(f"unknown dataset: {args.dataset}"); return 2
         script, command = mapping[args.dataset]
-        return subprocess.call([sys.executable, str(AGENTS / script), *command, "--seed", str(args.seed)], cwd=ROOT)
+        result = subprocess.call([sys.executable, str(AGENTS / script), *command, "--seed", str(args.seed)], cwd=ROOT)
+        if result:
+            return result
+        prepared = ["dense", "peak"] if args.dataset in ("dense", "peak") else [args.dataset]
+        return subprocess.call([sys.executable, str(ROOT / "scripts" / "prepare_runtime_datasets.py"), *prepared], cwd=ROOT)
     if args.cmd == "estimate":
         return subprocess.call([sys.executable, str(AGENTS / "russia10.py"), "estimate"], cwd=ROOT)
     folders = [DATA / args.dataset] if args.dataset else sorted(p for p in DATA.iterdir() if p.is_dir() and (p / "manifest.json").exists())

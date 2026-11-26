@@ -1,0 +1,230 @@
+{
+  "batches": [
+    {
+      "id": "9800000001",
+      "productId": "3100000001",
+      "sellerId": "3300000001",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000002",
+      "productId": "3100000002",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000003",
+      "productId": "3100000003",
+      "sellerId": "3300000003",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 15,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000004",
+      "productId": "3100000004",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 15,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000005",
+      "productId": "3100000005",
+      "sellerId": "3300000001",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000006",
+      "productId": "3100000006",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000007",
+      "productId": "3100000007",
+      "sellerId": "3300000001",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 15,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000008",
+      "productId": "3100000008",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 20,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000009",
+      "productId": "3100000009",
+      "sellerId": "3300000001",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000010",
+      "productId": "3100000010",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000011",
+      "productId": "3100000011",
+      "sellerId": "3300000001",
+      "storagePointId": "3500000001",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 15,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "9800000012",
+      "productId": "3100000012",
+      "sellerId": "3300000002",
+      "storagePointId": "3500000002",
+      "receivedAt": "2026-01-05T08:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 20,
+      "tariffVersionId": "9900000001",
+      "storageRateMinorPerSlotDay": 200
+    }
+  ],
+  "tariffs": [
+    {
+      "id": "9900000001",
+      "currency": "RUB",
+      "effectiveFrom": "2026-01-05T08:00:00Z",
+      "storageThresholdDays": 10,
+      "maximumDeliveryMinutes": 4320,
+      "rates": [
+        {
+          "code": "storage_slot_day",
+          "unit": "slot_day",
+          "amount": 200
+        },
+        {
+          "code": "handling",
+          "unit": "order",
+          "amount": 500
+        },
+        {
+          "code": "city_trip",
+          "unit": "order",
+          "amount": 1200
+        },
+        {
+          "code": "intercity",
+          "unit": "order",
+          "amount": 3500
+        },
+        {
+          "code": "extra_stop",
+          "unit": "stop",
+          "amount": 800
+        },
+        {
+          "code": "issue_reward",
+          "unit": "order",
+          "amount": 100
+        },
+        {
+          "code": "commission",
+          "unit": "basis_point",
+          "amount": 1000
+        }
+      ]
+    }
+  ]
+}

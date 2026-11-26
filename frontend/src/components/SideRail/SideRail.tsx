@@ -5,10 +5,11 @@ import { Icon } from '../Icon/Icon';
 import styles from './SideRail.module.css';
 
 type SideRailProps = {
+    roleId: string;
     onOpenRoleDialog: () => void;
 };
 
-export function SideRail({ onOpenRoleDialog }: SideRailProps) {
+export function SideRail({ onOpenRoleDialog, roleId }: SideRailProps) {
     return (
         <div className={styles.rail}>
             <Link to="/" className={styles.logo} aria-label="RWB Mesh Delivery — модель доставки">
@@ -16,7 +17,7 @@ export function SideRail({ onOpenRoleDialog }: SideRailProps) {
                 <span>mesh</span>
             </Link>
             <nav className={styles.navigation} aria-label="Основное меню">
-                {navigationRoutes.map(({ path, title, shortTitle, icon }) => (
+                {navigationRoutes.filter(({ path }) => roleId === 'dispatcher' || path === (roleId === 'seller' ? '/seller' : '/pvz')).map(({ path, title, shortTitle, icon }) => (
                     <NavLink key={path} to={path} end className={styles.item} aria-label={title}>
                         <Icon name={icon} className={styles.glyph} />
                         <span className={styles.tooltip} aria-hidden="true">{title}</span>
@@ -33,4 +34,5 @@ export function SideRail({ onOpenRoleDialog }: SideRailProps) {
         </div>
     );
 }
+
 

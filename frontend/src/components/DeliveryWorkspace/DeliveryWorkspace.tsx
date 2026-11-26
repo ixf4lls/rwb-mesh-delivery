@@ -63,10 +63,11 @@ export default function DeliveryWorkspace() {
 
     return (
         <div className={styles.workspace}>
-            {demo.isError && <QueryNotice error={demo.error} onRetry={demo.refetch} />}
+            {demo.isError && !(typeof demo.error === 'object' && 'status' in demo.error && demo.error.status === 404) && <QueryNotice error={demo.error} onRetry={demo.refetch} />}
             {demo.isLoading && <QueryNotice message="Загружаем активный демонабор…" />}
-            {demo.currentData && <DeliveryDataset key={`dataset:${demo.currentData.id}`} run={demo.currentData} />}
+            <DeliveryDataset key={`dataset:${demo.currentData?.id ?? 'new'}`} run={demo.currentData} />
             {scopeReady && <DeliveryModelPanel key={`model:${demoRunId ?? ''}`} demoRunId={demoRunId} clock={demo.currentData?.clock} />}
         </div>
     );
 }
+

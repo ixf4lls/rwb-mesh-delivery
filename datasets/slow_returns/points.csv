@@ -1,7 +1,7 @@
-pickup_point_id,city_id,point_code,point_name,kind,accepts_orders,accepts_returns,rating,load_level,capacity_cells
-5500000001,5400000001,pvz-b-01,ПВЗ 1,storage_pvz,true,true,4.9,высокая,100
-5500000002,5400000001,pvz-b-02,ПВЗ 2,storage_pvz,true,true,4.6,низкая,100
-5500000003,5400000001,pvz-b-03,ПВЗ 3,pickup_only,true,true,3.6,высокая,34
-5500000004,5400000001,pvz-b-04,ПВЗ 4,pickup_only,true,true,5.0,средняя,55
-5500000005,5400000001,pvz-b-05,ПВЗ 5,pickup_only,true,true,3.9,средняя,46
-5500000006,5400000001,pvz-b-06,ПВЗ 6,pickup_only,true,true,3.0,низкая,78
+pickup_point_id,city_id,point_code,point_name,kind,accepts_orders,accepts_returns,rating,load_level,capacity_cells,node_id,active,storage_enabled,opening_hours_json,capacity_json
+5500000001,5400000001,pvz-b-01,ПВЗ 1,storage_pvz,true,true,4.9,высокая,100,5500000001,true,true,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 160, ""storageQuotaSlots"": 160, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"
+5500000002,5400000001,pvz-b-02,ПВЗ 2,storage_pvz,true,true,4.6,низкая,100,5500000002,true,true,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 170, ""storageQuotaSlots"": 170, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"
+5500000003,5400000001,pvz-b-03,ПВЗ 3,pickup_only,true,true,3.6,высокая,34,5500000003,true,false,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 100, ""storageQuotaSlots"": 0, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"
+5500000004,5400000001,pvz-b-04,ПВЗ 4,pickup_only,true,true,5.0,средняя,55,5500000004,true,false,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 100, ""storageQuotaSlots"": 0, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"
+5500000005,5400000001,pvz-b-05,ПВЗ 5,pickup_only,true,true,3.9,средняя,46,5500000005,true,false,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 100, ""storageQuotaSlots"": 0, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"
+5500000006,5400000001,pvz-b-06,ПВЗ 6,pickup_only,true,true,3.0,низкая,78,5500000006,true,false,"[{""weekdays"": [1, 2, 3, 4, 5, 6, 7], ""opens"": ""00:00"", ""closes"": ""23:59""}]","{""totalSlots"": 100, ""storageQuotaSlots"": 0, ""ordinaryUsedSlots"": 0, ""pickupUsedSlots"": 0, ""inboundReservedSlots"": 0}"

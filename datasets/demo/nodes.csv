@@ -1,7 +1,7 @@
 node_id,city_id,node_code,node_name,kind,active,mode
 1920000001,1400000001,hub-a,Хаб А,hub,true,simulated
-1920000002,1400000001,sc-a,СЦ А,sorting_center,true,physical
-1920000003,1400000002,sc-b,СЦ Б,sorting_center,true,physical
+1920000002,1400000001,sc-a,СЦ А,sorting_center,true,simulated
+1920000003,1400000002,sc-b,СЦ Б,sorting_center,true,simulated
 1500000001,1400000002,s1,ПВЗ хранения S1,storage_pvz,true,physical
 1500000002,1400000002,s2,ПВЗ хранения S2,storage_pvz,true,physical
 1500000003,1400000002,p2,ПВЗ P2,pickup_only,true,physical

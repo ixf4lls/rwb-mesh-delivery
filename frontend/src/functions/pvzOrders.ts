@@ -45,6 +45,9 @@ export function getOrderActions(order: Order, pointId: string, route?: RouteRevi
         actions.push({ label: 'Подтвердить выдачу', orderId: order.id, body: { type: 'issued', expectedVersion } });
     }
 
+    if (order.shipments.every((shipment) => ['reserved', 'packed'].includes(shipment.status))) {
+        actions.push({ label: 'Отменить заказ', orderId: order.id, body: { type: 'canceled', expectedVersion, reason: '' } });
+    }
     return actions;
 }
 

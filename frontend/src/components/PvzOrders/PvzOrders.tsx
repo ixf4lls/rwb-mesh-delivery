@@ -54,19 +54,26 @@ export function PvzOrders({ pointId, demoRunId, modelClock }: PvzOrdersProps) {
             </div>
             <Dialog title={view.action?.label ?? 'Подтверждение операции'} open={Boolean(view.action)} busy={view.command.pending} onClose={view.closeAction}>
                 {view.action && (
-                    <div className={styles.confirm}>
+                    <form className={styles.confirm} onSubmit={(event) => {
+                        event.preventDefault();
+                        void view.confirmAction(String(new FormData(event.currentTarget).get('reason') ?? ''));
+                    }}>
                         <p>Заказ <strong>{view.action.orderId}</strong></p>
                         {'shipmentId' in view.action.body && <p>Отправление {view.action.body.shipmentId}</p>}
+                        {view.action.body.type === 'canceled' && <FormField label="Причина отмены заказа">
+                            <input name="reason" required maxLength={500} disabled={view.command.pending} />
+                        </FormField>}
                         {view.command.error && <p className={styles.error} role="alert">{view.command.error}</p>}
                         <div className={styles.actions}>
-                            <Button disabled={view.command.pending} onClick={() => void view.confirmAction()}>
+                            <Button type="submit" disabled={view.command.pending}>
                                 {view.command.pending ? 'Ожидаем подтверждения…' : view.command.error ? 'Повторить' : 'Подтвердить'}
                             </Button>
                             <Button variant="secondary" disabled={view.command.pending} onClick={view.closeAction}>Закрыть</Button>
                         </div>
-                    </div>
+                    </form>
                 )}
             </Dialog>
         </>
     );
 }
+

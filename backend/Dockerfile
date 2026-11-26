@@ -12,3 +12,4 @@ COPY --from=build /mesh /usr/local/bin/mesh
 COPY docs/openapi/ /app/docs/openapi/
 COPY backend/testdata/demo/ /app/backend/testdata/demo/
 ENTRYPOINT ["mesh"]
+COPY datasets/ /app/datasets/

@@ -34,6 +34,7 @@ export const meshApi = createApi({
             const context = extra as ApiContext | undefined;
             const token = context?.getAccessToken?.();
 
+            headers.set('X-Demo-Role', localStorage.getItem('mesh-demo-role') || 'dispatcher');
             headers.set('Accept', 'application/json, application/problem+json');
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
@@ -58,3 +59,4 @@ export const meshApi = createApi({
         }),
     }),
 });
+

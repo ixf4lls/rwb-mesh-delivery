@@ -24,64 +24,64 @@
   },
   "files": [
     {
-      "path": "cities.csv",
-      "sha256": "111952c336b16b14690e0bffe60012037dd9d491418b74b8fe63f08b846586ba",
-      "rows": 2
-    },
-    {
       "path": "nodes.csv",
-      "sha256": "e6896a1d3437ca06bb2d4b0c7d648c9192408e4e8e8ac77471d186721a8e312a",
-      "rows": 9
+      "rows": 9,
+      "sha256": "e463080e894b9702635403bf6ccf7e3868570d926024e9c02bf85530b53562d1"
     },
     {
       "path": "points.csv",
-      "sha256": "e128281ecdd3746f2bf5b90bfa5adc6636b11fa5c684448eb49ea6096bdd5f97",
-      "rows": 6
+      "rows": 6,
+      "sha256": "40d0af84244b100a0c5174f8b9aa4b1e1badae82afeef640a4767d30d935722b"
+    },
+    {
+      "path": "cities.csv",
+      "rows": 2,
+      "sha256": "2463fe122dfb33db8382dc59e228a58407dc9cb95d5f880dd15acc4f5f134756"
     },
     {
       "path": "sellers.csv",
-      "sha256": "255615a3d864b5f0e626fab706cff03dcbd56570f8f139438d30ce566300afa7",
-      "rows": 3
+      "rows": 3,
+      "sha256": "521984c598d3c689caf287e7e21ebe0774c9022d347ae28b40ad8f5dc1436045"
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "41145afc51335e153d3853c9b85a92a0ccfbe710c4ce1e6d031c7caa48f636cd",
-      "rows": 12
+      "rows": 12,
+      "sha256": "475cd2cbeee6f44c4eabcf9136f962fa212e7847b21a1161dc18dc008603f70e"
     },
     {
       "path": "products.csv",
-      "sha256": "cdabdf68640a8fc4da1c4b4444375714474389437c61d253ab1b3710fe2b03d7",
-      "rows": 12
+      "rows": 12,
+      "sha256": "2fae5acf6f097899725527503939b250c1784c01f5be172fbe88b893cdc54c6e"
     },
     {
       "path": "placement_pairs.csv",
-      "sha256": "8d440f46d08fdccd48391bd61b136df6772ee0f3cc5ebfb88cd11a62f6943a63",
-      "rows": 8
-    },
-    {
-      "path": "trips.csv",
-      "sha256": "fc094f399515ed3ad338b09a0a98ea5781664b2d0470ce4ce89905b9b444baa2",
-      "rows": 4
+      "rows": 8,
+      "sha256": "e6b1ed926881bac1d2c033c264b6778278ad5dc358b403d325e9c388e692ecb3"
     },
     {
       "path": "orders.csv",
-      "sha256": "f9daaf5fafddb9dbaa2d6551c2d01c5c8fb86f18e69f443486bd1ae2ed8d5f5e",
-      "rows": 7
-    },
-    {
-      "path": "tariff.json",
-      "sha256": "0cbb14e545910ff2485104b7e0f18e078f357230e07ab1293acfba6ede39dd25",
-      "rows": 1
+      "rows": 7,
+      "sha256": "5ec57be1d7400a9d81ecf82ad4268e1aa2de6442ae41a90c1441e8d64c0fbd25"
     },
     {
       "path": "api_examples.json",
-      "sha256": "21f67b90760238af0445e31a9be8b32f614f39eb594834a11e5a206ed0771f3d",
-      "rows": 8
+      "rows": 8,
+      "sha256": "99b194f63e1dd2c44e48939adfc454ede8d921308fb49d5f93121d5eda33f8d3"
     },
     {
       "path": "expected.json",
-      "sha256": "02daf13d1050cbdea8b99e0f4fecf2b14ed0da16418a3c94004e05333b32f6ca",
-      "rows": 1
+      "rows": 1,
+      "sha256": "c2374c40f06a9571c8b2bcae9f7f1cd512e6522e5390d4b565f33c117ad9f8fc"
+    },
+    {
+      "path": "trips.csv",
+      "rows": 80,
+      "sha256": "a0b2a6efccd5f7a8580a1bc9039b75cdfddc0538dfbc7a8a1e3c23bdb079b466"
+    },
+    {
+      "path": "initial_state.json",
+      "rows": 1,
+      "sha256": "0d8d0f921a15a6e3be200998689d2183c1323f06991092d8d77ea258167262ce"
     }
   ],
   "sharedCatalog": {
@@ -94,5 +94,12 @@
     "version": "0.1.0"
   },
   "idRules": "^[0-9]+$",
-  "reproduction": "python3 scripts/datasets/agents/demo_cases.py generate --seed 42"
+  "reproduction": "python3 scripts/datasets/agents/demo_cases.py generate --seed 42",
+  "runtimeGeneration": {
+    "command": "python scripts/prepare_runtime_datasets.py",
+    "seed": 42,
+    "inventory": "5 units per product, distributed over storage PVZ",
+    "capacity": "at least stock slots plus 100",
+    "transport": "bidirectional city stars and intercity chain, daily for 8 days, 200 slots, 60 minutes"
+  }
 }

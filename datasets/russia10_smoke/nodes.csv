@@ -1,14 +1,42 @@
-node_id,city_id,node_code,node_name,kind,mode
-7900000001,7400000001,hub-1,Региональный хаб 1,hub,simulated
-7900000002,7400000002,hub-2,Региональный хаб 2,hub,simulated
-7900000003,7400000003,hub-3,Региональный хаб 3,hub,simulated
-7900000004,7400000001,sc-moscow,Сортировочный центр — Москва,sorting_center,simulated
-7900000005,7400000002,sc-saint_petersburg,Сортировочный центр — Санкт-Петербург,sorting_center,simulated
-7900000006,7400000003,sc-yekaterinburg,Сортировочный центр — Екатеринбург,sorting_center,simulated
-7900000007,7400000004,sc-kazan,Сортировочный центр — Казань,sorting_center,simulated
-7900000008,7400000005,sc-nizhny_novgorod,Сортировочный центр — Нижний Новгород,sorting_center,simulated
-7900000009,7400000006,sc-samara,Сортировочный центр — Самара,sorting_center,simulated
-7900000010,7400000007,sc-cheboksary,Сортировочный центр — Чебоксары,sorting_center,simulated
-7900000011,7400000008,sc-yoshkar_ola,Сортировочный центр — Йошкар-Ола,sorting_center,simulated
-7900000012,7400000009,sc-volzhsk,Сортировочный центр — Волжск,sorting_center,simulated
-7900000013,7400000010,sc-innopolis,Сортировочный центр — Иннополис,sorting_center,simulated
+node_id,city_id,node_code,node_name,kind,mode,active
+7900000001,7400000001,hub-1,Региональный хаб 1,hub,simulated,true
+7900000002,7400000002,hub-2,Региональный хаб 2,hub,simulated,true
+7900000003,7400000003,hub-3,Региональный хаб 3,hub,simulated,true
+7900000004,7400000001,sc-moscow,Сортировочный центр — Москва,sorting_center,simulated,true
+7900000005,7400000002,sc-saint_petersburg,Сортировочный центр — Санкт-Петербург,sorting_center,simulated,true
+7900000006,7400000003,sc-yekaterinburg,Сортировочный центр — Екатеринбург,sorting_center,simulated,true
+7900000007,7400000004,sc-kazan,Сортировочный центр — Казань,sorting_center,simulated,true
+7900000008,7400000005,sc-nizhny_novgorod,Сортировочный центр — Нижний Новгород,sorting_center,simulated,true
+7900000009,7400000006,sc-samara,Сортировочный центр — Самара,sorting_center,simulated,true
+7900000010,7400000007,sc-cheboksary,Сортировочный центр — Чебоксары,sorting_center,simulated,true
+7900000011,7400000008,sc-yoshkar_ola,Сортировочный центр — Йошкар-Ола,sorting_center,simulated,true
+7900000012,7400000009,sc-volzhsk,Сортировочный центр — Волжск,sorting_center,simulated,true
+7900000013,7400000010,sc-innopolis,Сортировочный центр — Иннополис,sorting_center,simulated,true
+7500000001,7400000001,,ПВЗ 00001 — Москва,storage_pvz,physical,true
+7500000002,7400000001,,ПВЗ 00002 — Москва,pickup_only,physical,true
+7500000003,7400000001,,ПВЗ 00003 — Москва,pickup_only,physical,true
+7500010001,7400000002,,ПВЗ 00001 — Санкт-Петербург,storage_pvz,physical,true
+7500010002,7400000002,,ПВЗ 00002 — Санкт-Петербург,pickup_only,physical,true
+7500010003,7400000002,,ПВЗ 00003 — Санкт-Петербург,pickup_only,physical,true
+7500015001,7400000003,,ПВЗ 00001 — Екатеринбург,storage_pvz,physical,true
+7500015002,7400000003,,ПВЗ 00002 — Екатеринбург,pickup_only,physical,true
+7500015003,7400000003,,ПВЗ 00003 — Екатеринбург,pickup_only,physical,true
+7500016801,7400000004,,ПВЗ 00001 — Казань,storage_pvz,physical,true
+7500016802,7400000004,,ПВЗ 00002 — Казань,pickup_only,physical,true
+7500016803,7400000004,,ПВЗ 00003 — Казань,pickup_only,physical,true
+7500018301,7400000005,,ПВЗ 00001 — Нижний Новгород,storage_pvz,physical,true
+7500018302,7400000005,,ПВЗ 00002 — Нижний Новгород,pickup_only,physical,true
+7500018303,7400000005,,ПВЗ 00003 — Нижний Новгород,pickup_only,physical,true
+7500019501,7400000006,,ПВЗ 00001 — Самара,storage_pvz,physical,true
+7500019502,7400000006,,ПВЗ 00002 — Самара,pickup_only,physical,true
+7500019503,7400000006,,ПВЗ 00003 — Самара,pickup_only,physical,true
+7500020401,7400000007,,ПВЗ 00001 — Чебоксары,storage_pvz,physical,true
+7500020402,7400000007,,ПВЗ 00002 — Чебоксары,pickup_only,physical,true
+7500020403,7400000007,,ПВЗ 00003 — Чебоксары,pickup_only,physical,true
+7500020801,7400000008,,ПВЗ 00001 — Йошкар-Ола,storage_pvz,physical,true
+7500020802,7400000008,,ПВЗ 00002 — Йошкар-Ола,pickup_only,physical,true
+7500020803,7400000008,,ПВЗ 00003 — Йошкар-Ола,pickup_only,physical,true
+7500020951,7400000009,,ПВЗ 00001 — Волжск,storage_pvz,physical,true
+7500020952,7400000009,,ПВЗ 00002 — Волжск,pickup_only,physical,true
+7500020953,7400000009,,ПВЗ 00003 — Волжск,pickup_only,physical,true
+7500020991,7400000010,,ПВЗ 00001 — Иннополис,storage_pvz,physical,true

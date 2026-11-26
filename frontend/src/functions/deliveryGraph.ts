@@ -29,6 +29,26 @@ export function buildDeliveryGraph({ shipments, points, order, incidents, varian
     let laneTop = 0;
 
     shipments.forEach((shipment) => {
+        if (variant !== 'return' && shipment.fromNodeId === shipment.toNodeId
+            && shipment.segments.every((segment) => segment.fromNodeId === segment.toNodeId)) {
+            const pointId = shipment.toNodeId;
+            const id = `pickup:${pointId}`;
+            const existing = nodes.find((node) => node.id === id);
+            const live = order?.shipments.find((item) => item.id === shipment.id);
+            const blocked = points.get(pointId)?.active === false || incidents.some((incident) => (
+                incident.status !== 'resolved' && incident.failureTarget.nodeId === pointId
+            ));
+            const current = live?.lastKnownNodeId === pointId;
+            if (existing) {
+                if (current && existing.data.state !== 'unavailable') existing.data.state = 'current';
+                return;
+            }
+            nodes.push({ id, type: 'routePoint', position: { x: 0, y: laneTop },
+                data: { pointId, title: pointName(points, pointId), caption: 'Товар доступен в ПВЗ выдачи',
+                    state: blocked ? 'unavailable' : current ? 'current' : 'normal' } });
+            laneTop += 220;
+            return;
+        }
         const laneNodes: GraphNode[] = [];
         const live = order?.shipments.find((item) => item.id === shipment.id);
         const activeIndex = shipment.segments.findIndex(({ id }) => id === live?.activeSegmentId);
@@ -55,7 +75,7 @@ export function buildDeliveryGraph({ shipments, points, order, incidents, varian
 
         const startId = `${shipment.id}:start`;
         const sellers = [...new Set(shipment.contents.map(({ productId }) => sellerIds.get(productId)).filter(Boolean))];
-        if (variant !== 'return' && sellers.length > 0) {
+        if (variant !== 'return' && shipment.fromNodeId !== shipment.toNodeId && sellers.length > 0) {
             const id = `${shipment.id}:seller`;
             addNode(id, sellers.join(', '), 'Продавец');
             edges.push({ id: `${id}:link`, source: id, target: startId, type: 'straight', style: { strokeDasharray: '4 5' }, label: 'Товар' });
@@ -65,6 +85,7 @@ export function buildDeliveryGraph({ shipments, points, order, incidents, varian
         let lastGraphId = startId;
 
         shipment.segments.forEach((segment, index) => {
+            if (segment.fromNodeId === segment.toNodeId) return;
             if (segment.fromNodeId !== lastNodeId) {
                 lastGraphId = `${shipment.id}:${index}:start`;
                 addStop(lastGraphId, segment.fromNodeId);

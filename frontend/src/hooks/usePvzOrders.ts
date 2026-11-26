@@ -11,7 +11,10 @@ export function usePvzOrders(pointId: string, demoRunId?: string) {
     const [action, setAction] = useState<OrderAction | null>(null);
     const [success, setSuccess] = useState('');
     const page = useCursorPage();
-    const orders = pvzApi.useListOrdersQuery({ pointId, demoRunId, status: status || undefined, cursor: page.cursor });
+    const orders = pvzApi.useListOrdersQuery(
+        { pointId, demoRunId, status: status || undefined, cursor: page.cursor },
+        { pollingInterval: 5000, refetchOnMountOrArgChange: true },
+    );
     const items = orders.currentData?.items ?? [];
     const order = items.find(({ id }) => id === selectedId) ?? items[0];
     const command = useOrderCommand(demoRunId);
@@ -28,10 +31,12 @@ export function usePvzOrders(pointId: string, demoRunId?: string) {
         setAction(value);
     }
 
-    async function confirmAction() {
+    async function confirmAction(reason = '') {
         if (!action) return;
 
-        const result = await command.submit(action);
+        if (action.body.type === 'canceled' && !reason.trim()) return;
+        const result = await command.submit(action.body.type === 'canceled'
+            ? { ...action, body: { ...action.body, reason: reason.trim() } } : action);
         if (result) {
             setAction(null);
             setSuccess(`Операция по заказу ${action.orderId} подтверждена.`);

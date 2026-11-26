@@ -14,6 +14,8 @@ import (
 type Auth struct {
 	UserKey, ServiceKey []byte
 	Issuer              string
+	Mock bool
+	Store *core.Store
 }
 
 func (a Auth) verify(raw string, key []byte, audience string) (core.M, error) {
@@ -59,7 +61,30 @@ func actor(c core.M) core.Actor {
 	return core.Actor{Subject: core.S(c["sub"]), Roles: core.Strings(c["roles"]), PointIDs: core.Strings(c["pvzIds"]), SellerIDs: core.Strings(c["sellerIds"])}
 }
 func (a Auth) authenticate(r *http.Request, ep endpoint) (core.Actor, error) {
-	raw := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	if a.Mock {
+        role := r.Header.Get("X-Demo-Role")
+        if role == "" { role = "dispatcher" }
+        if role != "dispatcher" && role != "seller" && role != "pvz_operator" {
+            return core.Actor{}, core.Fail(400, "invalid_role", "Unknown demo role")
+        }
+        who := core.Actor{Subject: "demo-user", Roles: []string{role}}
+        if role == "dispatcher" { who.Roles = append(who.Roles, "demo_admin") }
+        allowed := false
+        for _, required := range core.Strings(ep.Definition["x-roles"]) {
+            if who.Has(required) { allowed = true }
+        }
+        if ep.Internal || !allowed { return who, core.Fail(403, "forbidden", "Selected role cannot call operation") }
+        rows, err := a.Store.Pool.Query(r.Context(), "SELECT DISTINCT kind, id FROM mesh_records WHERE kind IN ('pickup-points', 'sellers')")
+        if err != nil { return who, err }
+        defer rows.Close()
+        for rows.Next() {
+            var kind, id string
+            if err := rows.Scan(&kind, &id); err != nil { return who, err }
+            if kind == "pickup-points" && role != "seller" { who.PointIDs = append(who.PointIDs, id) }; if kind == "sellers" && role != "pvz_operator" { who.SellerIDs = append(who.SellerIDs, id) }
+        }
+        return who, rows.Err()
+    }
+    raw := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 	if !ep.Internal {
 		c, e := a.verify(raw, a.UserKey, "mesh-user")
 		if e != nil {
@@ -117,3 +142,6 @@ func Token(key []byte, claims core.M) string {
 	mac.Write([]byte(body))
 	return body + "." + encode(mac.Sum(nil))
 }
+
+
+

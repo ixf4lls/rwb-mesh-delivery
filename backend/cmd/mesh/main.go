@@ -83,15 +83,15 @@ func run() error {
 	case "worker":
 		return store.Work(ctx)
 	case "api":
-		if len(userKey) < 32 || len(serviceKey) < 32 || string(userKey) == string(serviceKey) {
+		if os.Getenv("MESH_AUTH_MODE") != "mock" && (len(userKey) < 32 || len(serviceKey) < 32 || string(userKey) == string(serviceKey)) {
 			return fmt.Errorf("distinct MESH_USER_JWT_SECRET and MESH_SERVICE_JWT_SECRET of at least 32 bytes required")
 		}
-		handler, e := httpapi.New(store, httpapi.Auth{UserKey: userKey, ServiceKey: serviceKey, Issuer: issuer}, *contracts)
+		handler, e := httpapi.New(store, httpapi.Auth{Mock: os.Getenv("MESH_AUTH_MODE") == "mock", Store: store, UserKey: userKey, ServiceKey: serviceKey, Issuer: issuer}, *contracts)
 		if e != nil {
 			return e
 		}
 		handler.AllowedOrigin = os.Getenv("MESH_CORS_ORIGIN")
-		server := &http.Server{Addr: *addr, Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 30 * time.Second, IdleTimeout: 60 * time.Second}
+		server := &http.Server{Addr: *addr, Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 300 * time.Second, IdleTimeout: 60 * time.Second}
 		go func() {
 			<-ctx.Done()
 			shutdown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -113,3 +113,5 @@ func split(s string) []string {
 	}
 	return strings.Split(s, ",")
 }
+
+

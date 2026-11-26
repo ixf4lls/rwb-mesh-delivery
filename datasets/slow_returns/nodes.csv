@@ -1,0 +1,7 @@
+node_id,city_id,node_name,kind,active,mode
+5500000001,5400000001,ПВЗ 1,storage_pvz,true,physical
+5500000002,5400000001,ПВЗ 2,storage_pvz,true,physical
+5500000003,5400000001,ПВЗ 3,pickup_only,true,physical
+5500000004,5400000001,ПВЗ 4,pickup_only,true,physical
+5500000005,5400000001,ПВЗ 5,pickup_only,true,physical
+5500000006,5400000001,ПВЗ 6,pickup_only,true,physical
