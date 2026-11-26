@@ -1,0 +1,2 @@
+# Backend feature collaboration
+Use Go, PostgreSQL, standard net/http and existing pgx dependency. No real service/data access in tests. Test database only MESH_TEST_DATABASE_URL=postgres://mesh_test:mesh_test@127.0.0.1:55432/mesh_test?sslmode=disable, an isolated synthetic Docker instance. Give each test unique scopes; never truncate shared tables. TestStore() rejects non-test DSNs. No Git index/branch/history changes by subagents.
