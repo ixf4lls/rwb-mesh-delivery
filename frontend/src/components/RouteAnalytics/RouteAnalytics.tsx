@@ -39,7 +39,6 @@ export function RouteAnalytics({ quote, shipments, points }: RouteAnalyticsProps
             {quote && <>
                 <DataTable title="Сравнение одной корзины" columns={['Показатель', 'Mesh', 'Через хаб', 'Разница Mesh − хаб']}
                     rows={comparisons} emptyMessage="Варианты для сравнения отсутствуют." />
-                <p>Тариф {quote.tariffVersionId}. Суммы и сроки получены из котировки {quote.id}. Процент считается от значения варианта через хаб.</p>
             </>}
             {segments.length > 0 && <DataTable title="Сегменты выбранного маршрута"
                 columns={['Этап', 'Откуда → куда', 'Расстояние', 'В пути', 'Ожидание', 'Затраты', 'Из чего складываются', 'Режим']}

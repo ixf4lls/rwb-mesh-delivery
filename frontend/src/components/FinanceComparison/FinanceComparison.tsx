@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { formatHours } from '../../functions/deliveryRoutes';
 import { elapsedMinutes, financeParties } from '../../functions/financeEntries';
 import { formatMoney } from '../../functions/money';
@@ -66,7 +65,6 @@ export function FinanceComparison({ demoRunId, clock }: { demoRunId?: string; cl
                 <FormField label="Конец периода"><input name="end" type="date" defaultValue={view.dates.end} required /></FormField>
                 <Button type="submit">Сравнить заказы</Button>
             </form>
-            <p className={styles.hint}>Выберите заказы с одинаковой корзиной и ПВЗ выдачи. Период ограничивает журнал проводок, обе даты включены по UTC.</p>
             <Pagination cursor={view.page.cursor} nextCursor={view.choices.currentData?.nextCursor} busy={view.choices.isFetching}
                 onPrevious={view.page.previous} onNext={view.page.next} />
             {view.choices.isError && <QueryNotice error={view.choices.error} onRetry={view.choices.refetch} />}
@@ -103,7 +101,6 @@ export function FinanceComparison({ demoRunId, clock }: { demoRunId?: string; cl
                 <div className={styles.ledgers}>
                     {journals.map(({ title, filters }) => <FinanceLedger key={`${title}:${ledgerKey}`} compact title={title} filters={filters} />)}
                 </div>
-                <p className={styles.hint}>Показаны проведённые суммы каждого участника. Прогноз затрат и сроков до создания заказа доступен в <Link to="/delivery-model">модели доставки</Link>.</p>
             </>}
         </div>
     );

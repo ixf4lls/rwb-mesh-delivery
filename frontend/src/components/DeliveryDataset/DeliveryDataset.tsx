@@ -13,7 +13,7 @@ export function DeliveryDataset({ run }: { run: DemoRun }) {
     return (
         <details className={styles.panel}>
             <summary>Демонаборы · {items.find(({ id }) => id === run.datasetId)?.name ?? run.datasetId}</summary>
-            <p>Модельное время {formatDate(run.clock)}. Новый прогон загружает исходное состояние набора.</p>
+            <p>Модельное время {formatDate(run.clock)}.</p>
             <form onSubmit={apply}>
                 <FormField label="Набор данных">
                     <select name="datasetId" required defaultValue="" disabled={action.pending}>

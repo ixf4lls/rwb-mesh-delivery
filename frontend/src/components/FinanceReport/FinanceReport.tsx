@@ -57,7 +57,6 @@ export function FinanceReport({ demoRunId, clock }: { demoRunId?: string; clock?
                 <FormField label="Конец периода"><input type="date" name="end" defaultValue={view.dates.end} required /></FormField>
                 <Button type="submit">Показать отчёт</Button>
             </form>
-            <p className={styles.hint}>Обе даты включаются в период. Границы суток по UTC.</p>
             {view.validation && <p className={styles.error} role="alert">{view.validation}</p>}
             {view.points.isError && <QueryNotice error={view.points.error} onRetry={view.points.refetch} />}
             {reports.map((query, index) => query.isError ? <QueryNotice key={index} error={query.error} onRetry={query.refetch} /> : null)}

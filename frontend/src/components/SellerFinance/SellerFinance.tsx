@@ -17,7 +17,6 @@ export function SellerFinance({ sellerId, demoRunId, clock }: { sellerId: string
                 <FormField label="Конец периода"><input name="end" type="date" required defaultValue={dates.end} /></FormField>
                 <Button variant="secondary" type="submit">Показать период</Button>
             </form>
-            <p className={styles.hint}>Обе даты включаются в период. Границы суток по UTC.</p>
             {error && <p className={styles.error} role="alert">{error}</p>}
             {economics.isError && <QueryNotice error={economics.error} onRetry={economics.refetch} />}
             {economics.isFetching && !data && <QueryNotice message="Загружаем финансовые показатели…" />}

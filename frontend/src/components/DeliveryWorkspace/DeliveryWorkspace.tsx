@@ -56,11 +56,6 @@ function DeliveryModelPanel({ demoRunId, clock }: { demoRunId?: string; clock?: 
             <DeliveryEvents model={model} demoRunId={demoRunId} clock={clock} />
             <NoticeInbox demoRunId={demoRunId} />
             {order && <DeliveryFinancials key={order.id} order={order} clock={clock} demoRunId={demoRunId} />}
-            <details className={styles.criteria}>
-                <summary>Условия модели</summary>
-                <p>Команда предлагает учитывать свободные места, рейтинг ПВЗ от 4,5, нагрузку сотрудников, спрос и выгодность хранения. Предлагаемые пределы товара — 60 × 40 × 40 см и 20 кг.</p>
-                <p>Эти пороги относятся к модели команды. Интерфейс показывает решение API и его причины. Прогноз прибыли по каждой альтернативе и изменение тарифов в котировке пока недоступны.</p>
-            </details>
         </>
     );
 }
