@@ -70,7 +70,7 @@ services:
       VITE_API_DEMO_MODE: 'false'
       MESH_API_PROXY_TARGET: http://api:8081
     ports:
-      - '127.0.0.1:5173:5173'
+      - '127.0.0.1:5180:5173'
     depends_on:
       api:
         condition: service_healthy
@@ -78,3 +78,5 @@ services:
 
 volumes:
   postgres_data:
+
+
