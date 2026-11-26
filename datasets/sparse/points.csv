@@ -1,7 +1,7 @@
-pickup_point_id,city_id,point_code,point_name,kind,accepts_orders,accepts_returns
-4500000001,4400000001,pvz-b-01,ПВЗ 1,storage_pvz,true,true
-4500000002,4400000001,pvz-b-02,ПВЗ 2,storage_pvz,true,true
-4500000003,4400000001,pvz-b-03,ПВЗ 3,pickup_only,true,true
-4500000004,4400000001,pvz-b-04,ПВЗ 4,pickup_only,true,true
-4500000005,4400000001,pvz-b-05,ПВЗ 5,pickup_only,true,true
-4500000006,4400000001,pvz-b-06,ПВЗ 6,pickup_only,true,true
+pickup_point_id,city_id,point_code,point_name,kind,accepts_orders,accepts_returns,rating,load_level,capacity_cells
+4500000001,4400000001,pvz-b-01,ПВЗ 1,storage_pvz,true,true,3.6,средняя,100
+4500000002,4400000001,pvz-b-02,ПВЗ 2,storage_pvz,true,true,1.9,средняя,100
+4500000003,4400000001,pvz-b-03,ПВЗ 3,pickup_only,true,true,3.0,высокая,44
+4500000004,4400000001,pvz-b-04,ПВЗ 4,pickup_only,true,true,3.0,высокая,94
+4500000005,4400000001,pvz-b-05,ПВЗ 5,pickup_only,true,true,3.9,средняя,81
+4500000006,4400000001,pvz-b-06,ПВЗ 6,pickup_only,true,true,3.1,высокая,44

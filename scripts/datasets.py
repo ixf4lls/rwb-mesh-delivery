@@ -83,6 +83,21 @@ def validate_dataset(folder: Path) -> list[str]:
                 ids = [r[primary] for r in rows]
                 if len(ids) != len(set(ids)):
                     errors.append(f"{folder.name}: duplicate {primary} in {path.name}")
+        if table == "points":
+            required = {"rating", "load_level", "capacity_cells"}
+            if rows and not required.issubset(rows[0]):
+                errors.append(f"{folder.name}/points.csv: missing pickup-point attributes {sorted(required - set(rows[0]))}")
+            for row_no, row in enumerate(rows, 2):
+                try:
+                    rating = float(row.get("rating", "nan"))
+                    if not (1 <= rating <= 5) or not re.fullmatch(r"[1-5]\.[0-9]", row.get("rating", "")):
+                        raise ValueError
+                except ValueError:
+                    errors.append(f"{folder.name}/points.csv:{row_no}: rating must be 1.0–5.0 with one decimal place")
+                if row.get("load_level") not in {"низкая", "средняя", "высокая"}:
+                    errors.append(f"{folder.name}/points.csv:{row_no}: invalid load_level")
+                if not re.fullmatch(r"[1-9][0-9]*", row.get("capacity_cells", "")):
+                    errors.append(f"{folder.name}/points.csv:{row_no}: capacity_cells must be a positive integer")
         for row_no, row in enumerate(rows, 2):
             for key, value in row.items():
                 if key in id_fields or key.endswith("_id"):

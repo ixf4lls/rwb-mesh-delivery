@@ -13,7 +13,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts" / "datasets"))
-from common import numeric_id, product_geometry, sha256, write_manifest
+from common import numeric_id, product_geometry, sha256, write_manifest, pickup_point_attributes
 
 OUT = ROOT / "datasets" / "city150"
 SEED = 42
@@ -59,6 +59,7 @@ def generate(seed: int = SEED, out: Path = OUT):
             "point_name": f"ПВЗ {i:03d}", "node_id": pid,
             "kind": "storage_pvz" if i <= 15 else "pickup_only", "active": "true", "mode": "physical",
             "accepts_orders": "true", "accepts_returns": "true",
+            **pickup_point_attributes(seed, pid, i <= 15, "высокая" if i <= 30 else None),
             "district_id": numeric_id(DATASET, "district", (i - 1) % 10 + 1),
             "latitude": f"{56.62 + radius * math.sin(angle):.6f}",
             "longitude": f"{47.89 + radius * math.cos(angle):.6f}",

@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "datasets"
 import sys
 sys.path.insert(0, str(ROOT / "scripts"))
-from datasets.common import is_numeric_id, numeric_id, product_geometry
+from datasets.common import is_numeric_id, numeric_id, product_geometry, pickup_point_attributes
 CITIES = [
     ("moscow", "Москва", "Europe/Moscow", 10_000),
     ("saint_petersburg", "Санкт-Петербург", "Europe/Moscow", 5_000),
@@ -141,10 +141,10 @@ def generate(out_dir: Path, cities, max_points: int | None, days: int, seed: int
          paths["nodes"].open("w", encoding="utf-8", newline="") as nf, \
          paths["districts"].open("w", encoding="utf-8", newline="") as df, \
          paths["points"].open("w", encoding="utf-8", newline="") as pf:
-        cw = csv.DictWriter(cf, ["city_id", "city_code", "city_name", "time_zone", "hub_id", "sorting_center_id"]); cw.writeheader()
-        nw = csv.DictWriter(nf, ["node_id", "city_id", "node_code", "node_name", "kind", "mode"]); nw.writeheader()
-        dw = csv.DictWriter(df, ["district_id", "city_id", "district_code", "district_name"]); dw.writeheader()
-        pw = csv.DictWriter(pf, ["pickup_point_id", "city_id", "point_code", "point_name", "point_no", "district_id", "latitude", "longitude", "storage_enabled", "regional_hub_id"]); pw.writeheader()
+        cw = csv.DictWriter(cf, ["city_id", "city_code", "city_name", "time_zone", "hub_id", "sorting_center_id"], lineterminator="\n"); cw.writeheader()
+        nw = csv.DictWriter(nf, ["node_id", "city_id", "node_code", "node_name", "kind", "mode"], lineterminator="\n"); nw.writeheader()
+        dw = csv.DictWriter(df, ["district_id", "city_id", "district_code", "district_name"], lineterminator="\n"); dw.writeheader()
+        pw = csv.DictWriter(pf, ["pickup_point_id", "city_id", "point_code", "point_name", "point_no", "district_id", "latitude", "longitude", "storage_enabled", "regional_hub_id", "rating", "load_level", "capacity_cells"], lineterminator="\n"); pw.writeheader()
         active_hubs = sorted({hub_group[c[0]] for c in cities})
         representative = {group: next(c[0] for c in cities if hub_group[c[0]] == group) for group in active_hubs}
         for group in active_hubs:
@@ -178,16 +178,16 @@ def generate(out_dir: Path, cities, max_points: int | None, days: int, seed: int
                              "point_code": f"{city_id}-p{n:05d}", "point_name": f"ПВЗ {n:05d} — {name}",
                              "point_no": n, "district_id": district_fk,
                              "latitude": f"{lat0 + radius*math.sin(angle):.6f}", "longitude": f"{lon0 + radius*math.cos(angle):.6f}",
-                             "storage_enabled": str(n <= storage_n).lower(), "regional_hub_id": hub_fk})
+                             "storage_enabled": str(n <= storage_n).lower(), "regional_hub_id": hub_fk, **pickup_point_attributes(seed, point_id(dataset_id, city_id, n), n <= storage_n)})
                 point_rows += 1
     with paths["sellers"].open("w", encoding="utf-8", newline="") as sf, \
          paths["seller_skus"].open("w", encoding="utf-8", newline="") as skf, \
          paths["categories"].open("w", encoding="utf-8", newline="") as cf, \
          paths["products"].open("w", encoding="utf-8", newline="") as pf:
-        sw = csv.DictWriter(sf, ["seller_id", "seller_code", "seller_name"]); sw.writeheader()
-        skw = csv.DictWriter(skf, ["seller_sku", "seller_id", "sku_value"]); skw.writeheader()
-        ctw = csv.DictWriter(cf, ["category_id", "category_code", "category_name"]); ctw.writeheader()
-        pw = csv.DictWriter(pf, ["product_id", "seller_id", "seller_sku", "product_name", "category_id", "weight_grams", "slots_per_unit", "sale_price_minor", "unit_cost_minor", "width_m", "height_m", "depth_m"]); pw.writeheader()
+        sw = csv.DictWriter(sf, ["seller_id", "seller_code", "seller_name"], lineterminator="\n"); sw.writeheader()
+        skw = csv.DictWriter(skf, ["seller_sku", "seller_id", "sku_value"], lineterminator="\n"); skw.writeheader()
+        ctw = csv.DictWriter(cf, ["category_id", "category_code", "category_name"], lineterminator="\n"); ctw.writeheader()
+        pw = csv.DictWriter(pf, ["product_id", "seller_id", "seller_sku", "product_name", "category_id", "weight_grams", "slots_per_unit", "sale_price_minor", "unit_cost_minor", "width_m", "height_m", "depth_m"], lineterminator="\n"); pw.writeheader()
         for cat_no, cat in enumerate(category_names, 1):
             ctw.writerow({"category_id": category_ids[cat], "category_code": cat, "category_name": cat.title()})
         for seller_no in range(1, 201):
@@ -210,8 +210,8 @@ def generate(out_dir: Path, cities, max_points: int | None, days: int, seed: int
     line_count = 0
     intent_count = 0
     with paths["orders"].open("w", encoding="utf-8", newline="") as f, paths["return_intents"].open("w", encoding="utf-8", newline="") as rf:
-        w = csv.DictWriter(f, FIELDS); w.writeheader()
-        rw = csv.DictWriter(rf, ["return_id", "request_key", "delay_days_after_issued", "requested_product_ids_json", "return_point_id", "inspection_outcome"]); rw.writeheader()
+        w = csv.DictWriter(f, FIELDS, lineterminator="\n"); w.writeheader()
+        rw = csv.DictWriter(rf, ["return_id", "request_key", "delay_days_after_issued", "requested_product_ids_json", "return_point_id", "inspection_outcome"], lineterminator="\n"); rw.writeheader()
         for city_id, name, tz, _ in cities:
             city_fk = city_ids[city_id]
             for p_no in range(1, counts_by_city[city_id] + 1):

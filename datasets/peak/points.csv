@@ -1,7 +1,7 @@
-pickup_point_id,city_id,node_id,point_code,point_name,storage_enabled,accepts_orders,accepts_returns,latitude,longitude
-3500000001,3400000001,3500000001,dense-p1,ПВЗ Б-1,true,true,true,55.0001,49.0001
-3500000002,3400000001,3500000002,dense-p2,ПВЗ Б-2,true,true,true,55.0002,49.0002
-3500000003,3400000001,3500000003,dense-p3,ПВЗ Б-3,false,true,true,55.0003,49.0003
-3500000004,3400000001,3500000004,dense-p4,ПВЗ Б-4,false,true,true,55.0004,49.0004
-3500000005,3400000001,3500000005,dense-p5,ПВЗ Б-5,false,true,true,55.0005,49.0005
-3500000006,3400000001,3500000006,dense-p6,ПВЗ Б-6,false,true,true,55.0006,49.0006
+pickup_point_id,city_id,node_id,point_code,point_name,storage_enabled,accepts_orders,accepts_returns,latitude,longitude,rating,load_level,capacity_cells
+3500000001,3400000001,3500000001,dense-p1,ПВЗ Б-1,true,true,true,55.0001,49.0001,1.9,высокая,100
+3500000002,3400000001,3500000002,dense-p2,ПВЗ Б-2,true,true,true,55.0002,49.0002,3.0,низкая,100
+3500000003,3400000001,3500000003,dense-p3,ПВЗ Б-3,false,true,true,55.0003,49.0003,1.6,высокая,49
+3500000004,3400000001,3500000004,dense-p4,ПВЗ Б-4,false,true,true,55.0004,49.0004,1.5,высокая,95
+3500000005,3400000001,3500000005,dense-p5,ПВЗ Б-5,false,true,true,55.0005,49.0005,1.6,высокая,41
+3500000006,3400000001,3500000006,dense-p6,ПВЗ Б-6,false,true,true,55.0006,49.0006,4.7,средняя,96

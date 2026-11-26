@@ -7,6 +7,9 @@ from __future__ import annotations
 import argparse, csv, hashlib, json, shutil
 from pathlib import Path
 from datetime import datetime, timezone
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "datasets"))
+from common import pickup_point_attributes
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_OUT = ROOT / "datasets" / "demo"
@@ -140,7 +143,7 @@ def generate(seed: int = 42, out_dir: Path | str = DEFAULT_OUT):
     def write_rows(name,fields,rows):
         p=out/name
         with p.open("w",encoding="utf-8",newline="") as f:
-            w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator="\n");w.writeheader();w.writerows(rows)
         files[name]={"sha256":_sha(p),"rows":len(rows)}
     cities=[{"city_id":city_ids[x["id"]],"city_code":x["id"],"city_name":x["name"],"time_zone":x["timeZone"]} for x in NETWORK["cities"]]
     write_rows("cities.csv",list(cities[0]),cities)
@@ -153,7 +156,7 @@ def generate(seed: int = 42, out_dir: Path | str = DEFAULT_OUT):
     for n in NETWORK["nodes"]:
         if n["id"] not in accepts: continue
         a=accepts[n["id"]]
-        points.append({"pickup_point_id":point_ids[n["id"]],"city_id":city_ids[n["cityId"]],"node_id":node_ids[n["id"]],"point_code":n["id"],"point_name":n["name"],"kind":n["kind"],"active":str(n["active"]).lower(),"accepts_orders":str(a["acceptsOrders"]).lower(),"accepts_returns":str(a["acceptsReturns"]).lower(),"opening_hours_json":json.dumps(a["openingHours"],separators=(",",":"))})
+        points.append({"pickup_point_id":point_ids[n["id"]],"city_id":city_ids[n["cityId"]],"node_id":node_ids[n["id"]],"point_code":n["id"],"point_name":n["name"],"kind":n["kind"],"active":str(n["active"]).lower(),"accepts_orders":str(a["acceptsOrders"]).lower(),"accepts_returns":str(a["acceptsReturns"]).lower(),"opening_hours_json":json.dumps(a["openingHours"],separators=(",",":")),**pickup_point_attributes(seed,point_ids[n["id"]],n["kind"]=="storage_pvz")})
     write_rows("points.csv",list(points[0]),points)
     seller_names={x["seller_code"]:x["seller_name"] for x in SHARED_CATALOG["sellers"]}
     sellers=[{"seller_id":seller_ids[c],"seller_code":c,"seller_name":seller_names[c]} for c in sorted(seller_ids)]

@@ -5,7 +5,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(ROOT/'scripts'/'datasets'))
-from common import numeric_id, product_geometry, write_manifest, sha256
+from common import numeric_id, product_geometry, write_manifest, sha256, pickup_point_attributes
 OUT=ROOT/'datasets'/'sparse'; DATASET='sparse'; SEED=42; START=date(2026,1,5)
 CANONICAL=json.loads((ROOT/'datasets'/'shared'/'catalog_scenarios_1_5.json').read_text(encoding='utf-8'))
 CANONICAL_PRODUCTS=CANONICAL['products']
@@ -31,7 +31,7 @@ def generate(seed=SEED,out=OUT):
     point_codes=[f'pvz-b-{i:02d}' for i in range(1,7)]
     product_codes=[p['sku_value'] for p in CANONICAL_PRODUCTS]
     write_csv(out/'cities.csv',[{'city_id':CITY,'city_code':'city-b','city_name':'Город Б','time_zone':'Europe/Moscow'}],['city_id','city_code','city_name','time_zone'])
-    write_csv(out/'points.csv',[{'pickup_point_id':POINT_IDS[i],'city_id':CITY,'point_code':point_codes[i],'point_name':f'ПВЗ {i+1}','kind':'storage_pvz' if i<2 else 'pickup_only','accepts_orders':'true','accepts_returns':'true'} for i in range(6)],['pickup_point_id','city_id','point_code','point_name','kind','accepts_orders','accepts_returns'])
+    write_csv(out/'points.csv',[{'pickup_point_id':POINT_IDS[i],'city_id':CITY,'point_code':point_codes[i],'point_name':f'ПВЗ {i+1}','kind':'storage_pvz' if i<2 else 'pickup_only','accepts_orders':'true','accepts_returns':'true',**pickup_point_attributes(seed,POINT_IDS[i],'storage_pvz' if i<2 else '')} for i in range(6)],['pickup_point_id','city_id','point_code','point_name','kind','accepts_orders','accepts_returns','rating','load_level','capacity_cells'])
     write_csv(out/'sellers.csv',[{'seller_id':SELLER_IDS[i],'seller_code':s['seller_code'],'seller_name':s['seller_name']} for i,s in enumerate(CANONICAL['sellers'])],['seller_id','seller_code','seller_name'])
     seller_idx={value:i for i,value in enumerate(SELLER_VALUES)}
     seller_for_product=[SELLER_IDS[seller_idx[p['seller_code']]] for p in CANONICAL_PRODUCTS]

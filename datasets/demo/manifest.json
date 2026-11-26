@@ -25,47 +25,47 @@
   "files": [
     {
       "path": "cities.csv",
-      "sha256": "2463fe122dfb33db8382dc59e228a58407dc9cb95d5f880dd15acc4f5f134756",
+      "sha256": "111952c336b16b14690e0bffe60012037dd9d491418b74b8fe63f08b846586ba",
       "rows": 2
     },
     {
       "path": "nodes.csv",
-      "sha256": "68bc3d21e98c62b82f4151996976c9cd4ff8278f0cf71747cefdf6391197192d",
+      "sha256": "e6896a1d3437ca06bb2d4b0c7d648c9192408e4e8e8ac77471d186721a8e312a",
       "rows": 9
     },
     {
       "path": "points.csv",
-      "sha256": "2f9b6c65e74f925f9c83ef256217bf10c06dab1c4bf7c855d03aaefeb5a2e1ae",
+      "sha256": "e128281ecdd3746f2bf5b90bfa5adc6636b11fa5c684448eb49ea6096bdd5f97",
       "rows": 6
     },
     {
       "path": "sellers.csv",
-      "sha256": "521984c598d3c689caf287e7e21ebe0774c9022d347ae28b40ad8f5dc1436045",
+      "sha256": "255615a3d864b5f0e626fab706cff03dcbd56570f8f139438d30ce566300afa7",
       "rows": 3
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "475cd2cbeee6f44c4eabcf9136f962fa212e7847b21a1161dc18dc008603f70e",
+      "sha256": "41145afc51335e153d3853c9b85a92a0ccfbe710c4ce1e6d031c7caa48f636cd",
       "rows": 12
     },
     {
       "path": "products.csv",
-      "sha256": "2fae5acf6f097899725527503939b250c1784c01f5be172fbe88b893cdc54c6e",
+      "sha256": "cdabdf68640a8fc4da1c4b4444375714474389437c61d253ab1b3710fe2b03d7",
       "rows": 12
     },
     {
       "path": "placement_pairs.csv",
-      "sha256": "e6b1ed926881bac1d2c033c264b6778278ad5dc358b403d325e9c388e692ecb3",
+      "sha256": "8d440f46d08fdccd48391bd61b136df6772ee0f3cc5ebfb88cd11a62f6943a63",
       "rows": 8
     },
     {
       "path": "trips.csv",
-      "sha256": "8f1e7387d8d71ddc5d23ddcab3977489eaa7f986e60c758765ec8d74af2a5e27",
+      "sha256": "fc094f399515ed3ad338b09a0a98ea5781664b2d0470ce4ce89905b9b444baa2",
       "rows": 4
     },
     {
       "path": "orders.csv",
-      "sha256": "5ec57be1d7400a9d81ecf82ad4268e1aa2de6442ae41a90c1441e8d64c0fbd25",
+      "sha256": "f9daaf5fafddb9dbaa2d6551c2d01c5c8fb86f18e69f443486bd1ae2ed8d5f5e",
       "rows": 7
     },
     {

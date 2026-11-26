@@ -11,7 +11,7 @@
     "cityId": "7400000008",
     "pickupPointId": "7500020801",
     "initialClock": "2026-01-05T00:00:00+03:00",
-    "showcaseRequestKey": "80000001000"
+    "showcaseRequestKey": "80000001001"
   },
   "counts": {
     "pointCount": 28,
@@ -38,52 +38,52 @@
   "files": [
     {
       "path": "cities.csv",
-      "sha256": "48158c7ed87632828f49a3e663731c71bc43f8660c3062af6b6317e3deced5df",
+      "sha256": "f0a3e8c947ab58c182ed3f5919fb8a9a8f61de6db24d835bf4c14b99ab5d21f5",
       "rows": 10
     },
     {
       "path": "nodes.csv",
-      "sha256": "87c6a7f22fc7f9a71740790f6feb9994cff0358551dfcae3b0934e30717c4a08",
+      "sha256": "737afebb90aa795ab40d536bc9677269803ee8fc9bc377aa229db5d52681e940",
       "rows": 13
     },
     {
       "path": "districts.csv",
-      "sha256": "dac40fdefed6f76e3bd3b6b1adcb9a07f4c608ad412fb212d5cd96fac69a6b4c",
+      "sha256": "42239891bd79c8dfbc19786006ab778a7cba94bb8fedabe7153d1872c1e1f6f5",
       "rows": 100
     },
     {
       "path": "points.csv",
-      "sha256": "889707b93d4ad653f21f20e943d2be131d90074918a8c491f3c18daa9e5380bd",
+      "sha256": "768ad583e14708614b07381dd2f5f87e99ed49ccf338ca74c0538c55dba3c5b1",
       "rows": 28
     },
     {
       "path": "sellers.csv",
-      "sha256": "a46896d364b64e11655e903a226012c76a0b0fb6dcea7978dd4dda150ffa6d25",
+      "sha256": "3e77cd9064ac0720b0291885392e37b0180a8c881934840da90cc4bf9314ebd8",
       "rows": 200
     },
     {
       "path": "seller_skus.csv",
-      "sha256": "99ef3aeaab1935f345619675eba37c93e60988096b8dc2504fcf90718722bf05",
+      "sha256": "48a0046cb4887b17c80031032bac391f24f19cf3e47e622d3d1125b913ed0aaf",
       "rows": 20000
     },
     {
       "path": "categories.csv",
-      "sha256": "5fbe46d67ae54226975107e5f6d6b2add8a9d06603f798a77769673e3bb9ccab",
+      "sha256": "642710087d5625551c7cf477e36e0274569c5bf6599c5e80d04716f9e17ab2c2",
       "rows": 4
     },
     {
       "path": "products.csv",
-      "sha256": "99e28d50b1b6730e7bdb7cc90ccbf5f110c96f4967d425d41ea792df36845908",
+      "sha256": "0378763b0b8a5de42ad1911074753f2e331711f10116d5d67a4d5ea9d11415bd",
       "rows": 20000
     },
     {
       "path": "orders.csv",
-      "sha256": "8e41e2440d25d1eef52546cfe6065166a3fa0ba5b74a4fa8ca232f4523e20795",
+      "sha256": "26c02e99e0d73484101c959d5f47af28c7b874c37e8cf55066c1706a4e6de93e",
       "rows": 5590
     },
     {
       "path": "return_intents.csv",
-      "sha256": "38cc9b26ba18fb9bf254331baa7ef70f89decf74f70956af342140c83380e956",
+      "sha256": "c51814d7e1a967e2eb5ef4e3ca383c9421a4e27a2567b9d6071b428bfd403a37",
       "rows": 194
     }
   ],

@@ -48,10 +48,25 @@ def product_geometry(index: int) -> dict[str, str]:
     }
 
 
+
+def pickup_point_attributes(seed: int, point_id: str, storage_enabled: bool = False,
+                            load_level: str | None = None, capacity_cells: int | None = None) -> dict[str, str]:
+    """Stable demo attributes for a pickup point, shared by all dataset generators."""
+    digest = hashlib.sha256(f"pvz|{seed}|{point_id}".encode("utf-8")).digest()
+    rating_tenths = 10 + int.from_bytes(digest[:4], "big") % 41
+    levels = ("низкая", "средняя", "высокая")
+    load = load_level if load_level is not None else levels[digest[4] % len(levels)]
+    if load not in levels:
+        raise ValueError(f"invalid pickup point load level: {load}")
+    capacity = capacity_cells if capacity_cells is not None else (100 if storage_enabled else 30 + digest[5] % 71)
+    if not isinstance(capacity, int) or capacity < 1:
+        raise ValueError("capacity_cells must be a positive integer")
+    return {"rating": f"{rating_tenths / 10:.1f}", "load_level": load, "capacity_cells": str(capacity)}
+
 def write_csv(path: Path, rows: list[dict], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fields)
+        w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
 

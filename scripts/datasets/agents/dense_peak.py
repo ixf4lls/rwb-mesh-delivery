@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts" / "datasets"))
-from common import numeric_id
+from common import numeric_id, pickup_point_attributes
 SHARED_CATALOG_PATH = ROOT / "datasets" / "shared" / "catalog_scenarios_1_5.json"
 SHARED_CATALOG = json.loads(SHARED_CATALOG_PATH.read_text(encoding="utf-8"))
 SHARED_BY_ORDINAL = {p["ordinal"]:p for p in SHARED_CATALOG["products"]}
@@ -98,7 +98,7 @@ def scenario_files(sid, source_orders, seed, peak=False):
     write_csv(dest/"nodes.csv",list(nodes[0]),nodes)
     points=[]
     for i,point in enumerate(POINTS,1):
-        points.append({"pickup_point_id":point_ids[point],"city_id":city_id,"node_id":point_ids[point],"point_code":point,"point_name":f"ПВЗ Б-{i}","storage_enabled":str(point in STORAGE).lower(),"accepts_orders":"true","accepts_returns":"true","latitude":f"55.{i:04d}","longitude":f"49.{i:04d}"})
+        points.append({"pickup_point_id":point_ids[point],"city_id":city_id,"node_id":point_ids[point],"point_code":point,"point_name":f"ПВЗ Б-{i}","storage_enabled":str(point in STORAGE).lower(),"accepts_orders":"true","accepts_returns":"true","latitude":f"55.{i:04d}","longitude":f"49.{i:04d}",**pickup_point_attributes(seed,point_ids[point],point in STORAGE)})
     write_csv(dest/"points.csv",list(points[0]),points)
     seller_names={x["seller_code"]:x["seller_name"] for x in SHARED_CATALOG["sellers"]}
     sellers=[{"seller_id":seller_ids[code],"seller_code":code,"seller_name":seller_names[code]} for code in seller_codes]
