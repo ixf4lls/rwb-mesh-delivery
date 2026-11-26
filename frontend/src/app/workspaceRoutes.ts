@@ -29,9 +29,7 @@ export const workspaceRoutes = [
     },
 ] as const;
 
-export const overviewRoute = { path: '/', title: 'Обзор', shortTitle: 'Обзор', icon: 'dashboard' } as const;
-
-export const navigationRoutes = [overviewRoute, workspaceRoutes[2], workspaceRoutes[0], workspaceRoutes[1], workspaceRoutes[3]];
+export const navigationRoutes = [workspaceRoutes[2], workspaceRoutes[0], workspaceRoutes[1], workspaceRoutes[3]];
 
 export const demoRoles = [
     { id: 'pvz_operator', title: 'Оператор ПВЗ', workspace: workspaceRoutes[0] },

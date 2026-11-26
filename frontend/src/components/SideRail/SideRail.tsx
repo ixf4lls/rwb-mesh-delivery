@@ -11,13 +11,13 @@ type SideRailProps = {
 export function SideRail({ onOpenRoleDialog }: SideRailProps) {
     return (
         <div className={styles.rail}>
-            <Link to="/" className={styles.logo} aria-label="RWB Mesh Delivery — обзор">
+            <Link to="/" className={styles.logo} aria-label="RWB Mesh Delivery — модель доставки">
                 <Icon name="box" />
                 <span>mesh</span>
             </Link>
             <nav className={styles.navigation} aria-label="Основное меню">
                 {navigationRoutes.map(({ path, title, shortTitle, icon }) => (
-                    <NavLink key={path} to={path} end={path === '/'} className={styles.item} aria-label={title}>
+                    <NavLink key={path} to={path} end className={styles.item} aria-label={title}>
                         <Icon name={icon} className={styles.glyph} />
                         <span className={styles.tooltip} aria-hidden="true">{title}</span>
                         <span className={styles.mobileLabel} aria-hidden="true">{shortTitle}</span>
@@ -25,10 +25,12 @@ export function SideRail({ onOpenRoleDialog }: SideRailProps) {
                 ))}
             </nav>
             <Button variant="secondary" className={styles.profile} onClick={onOpenRoleDialog}
-                aria-label="Выбрать демонстрационную роль" aria-haspopup="dialog" title="Выбрать роль">
+                aria-label="Выбрать демонстрационную роль" aria-haspopup="dialog">
                 <Icon name="profile" />
+                <span className={styles.tooltip} aria-hidden="true">Выбрать роль</span>
                 <span className={styles.mobileLabel} aria-hidden="true">Роль</span>
             </Button>
         </div>
     );
 }
+
