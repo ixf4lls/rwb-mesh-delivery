@@ -1,0 +1,80 @@
+x-backend: &backend
+  build:
+    context: .
+    dockerfile: backend/Dockerfile
+  environment: &backend-env
+    MESH_DATABASE_URL: postgres://mesh:mesh@postgres:5432/mesh?sslmode=disable
+    MESH_USER_JWT_SECRET: ${MESH_USER_JWT_SECRET:-local-demo-user-secret-at-least-32-characters}
+    MESH_SERVICE_JWT_SECRET: ${MESH_SERVICE_JWT_SECRET:-local-demo-service-secret-different-32-characters}
+    MESH_JWT_ISSUER: mesh-local
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: mesh
+      POSTGRES_PASSWORD: mesh
+      POSTGRES_DB: mesh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U mesh -d mesh]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  migrate:
+    <<: *backend
+    command: [migrate]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  import:
+    <<: *backend
+    command: [import, --dataset, /app/backend/testdata/demo]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  api:
+    <<: *backend
+    command: [api, --addr, '0.0.0.0:8081', --contracts, /app/docs/openapi]
+    ports:
+      - '127.0.0.1:8081:8081'
+    depends_on:
+      import:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:8081/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    <<: *backend
+    command: [worker]
+    depends_on:
+      import:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      VITE_API_BASE_URL: /api/v1
+      VITE_API_DEMO_MODE: 'false'
+      MESH_API_PROXY_TARGET: http://api:8081
+    ports:
+      - '127.0.0.1:5173:5173'
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
