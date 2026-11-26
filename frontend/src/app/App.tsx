@@ -25,7 +25,7 @@ export function App() {
                 <Route index element={<Workspaces />} />
                 {workspaceRoutes.map((workspace) => (
                     <Route key={workspace.path} path={workspace.path} element={(
-                        <Page title={workspace.title} description={workspace.description}>
+                        <Page title={workspace.title}>
                             <Suspense fallback={<QueryNotice message="Открываем раздел…" />}>{workspaces[workspace.path]}</Suspense>
                         </Page>
                     )} />

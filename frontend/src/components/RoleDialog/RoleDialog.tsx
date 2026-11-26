@@ -15,7 +15,6 @@ type RoleDialogProps = {
 export function RoleDialog({ open, currentRole, onClose, onSelect }: RoleDialogProps) {
     return (
         <Dialog title="Демонстрационная роль" open={open} onClose={onClose}>
-            <p className={styles.description}>Выберите роль, чтобы открыть её рабочий раздел.</p>
             <ul className={styles.roles}>
                 {demoRoles.map((role) => (
                     <li key={role.id}>
