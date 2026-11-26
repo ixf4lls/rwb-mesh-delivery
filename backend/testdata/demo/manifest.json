@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "2.0.0",
+  "id": "backend_demo",
+  "seed": 42,
+  "initialClock": "2026-01-05T09:00:00Z",
+  "counts": {
+    "pointCount": 4,
+    "orderCount": 0,
+    "orderIntentCount": 0
+  },
+  "files": [
+    {
+      "path": "initial_state.json",
+      "sha256": "7e64990242c2532649e3974b1d0409414bf89621d72f34c2489d65b34a09acbe",
+      "rows": 1
+    }
+  ]
+}

@@ -1,0 +1,721 @@
+{
+  "cities": [
+    {
+      "id": "1",
+      "name": "Синтетический город",
+      "timeZone": "Europe/Moscow"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "11",
+      "cityId": "1",
+      "name": "Складской ПВЗ A",
+      "kind": "storage_pvz",
+      "active": true,
+      "mode": "physical",
+      "packingMinutes": 0
+    },
+    {
+      "id": "12",
+      "cityId": "1",
+      "name": "Складской ПВЗ B",
+      "kind": "storage_pvz",
+      "active": true,
+      "mode": "physical",
+      "packingMinutes": 0
+    },
+    {
+      "id": "13",
+      "cityId": "1",
+      "name": "ПВЗ выдачи",
+      "kind": "pickup_only",
+      "active": true,
+      "mode": "physical",
+      "packingMinutes": 0
+    },
+    {
+      "id": "14",
+      "cityId": "1",
+      "name": "Другой ПВЗ",
+      "kind": "storage_pvz",
+      "active": true,
+      "mode": "physical",
+      "packingMinutes": 0
+    },
+    {
+      "id": "21",
+      "cityId": "1",
+      "name": "Хаб",
+      "kind": "hub",
+      "active": true,
+      "mode": "simulated",
+      "packingMinutes": 0
+    },
+    {
+      "id": "22",
+      "cityId": "1",
+      "name": "СЦ",
+      "kind": "sorting_center",
+      "active": true,
+      "mode": "simulated",
+      "packingMinutes": 0
+    }
+  ],
+  "pickup-points": [
+    {
+      "id": "11",
+      "nodeId": "11",
+      "cityId": "1",
+      "node": {
+        "id": "11",
+        "cityId": "1",
+        "name": "Складской ПВЗ A",
+        "kind": "storage_pvz",
+        "active": true,
+        "mode": "physical",
+        "packingMinutes": 0
+      },
+      "active": true,
+      "acceptsOrders": true,
+      "acceptsReturns": true,
+      "openingHours": [
+        {
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "capacity": {
+        "totalSlots": 150,
+        "storageQuotaSlots": 100,
+        "ordinaryUsedSlots": 0,
+        "pickupUsedSlots": 0,
+        "inboundReservedSlots": 0
+      }
+    },
+    {
+      "id": "12",
+      "nodeId": "12",
+      "cityId": "1",
+      "node": {
+        "id": "12",
+        "cityId": "1",
+        "name": "Складской ПВЗ B",
+        "kind": "storage_pvz",
+        "active": true,
+        "mode": "physical",
+        "packingMinutes": 0
+      },
+      "active": true,
+      "acceptsOrders": true,
+      "acceptsReturns": true,
+      "openingHours": [
+        {
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "capacity": {
+        "totalSlots": 150,
+        "storageQuotaSlots": 100,
+        "ordinaryUsedSlots": 0,
+        "pickupUsedSlots": 0,
+        "inboundReservedSlots": 0
+      }
+    },
+    {
+      "id": "13",
+      "nodeId": "13",
+      "cityId": "1",
+      "node": {
+        "id": "13",
+        "cityId": "1",
+        "name": "ПВЗ выдачи",
+        "kind": "pickup_only",
+        "active": true,
+        "mode": "physical",
+        "packingMinutes": 0
+      },
+      "active": true,
+      "acceptsOrders": true,
+      "acceptsReturns": true,
+      "openingHours": [
+        {
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "capacity": {
+        "totalSlots": 150,
+        "storageQuotaSlots": 100,
+        "ordinaryUsedSlots": 0,
+        "pickupUsedSlots": 0,
+        "inboundReservedSlots": 0
+      }
+    },
+    {
+      "id": "14",
+      "nodeId": "14",
+      "cityId": "1",
+      "node": {
+        "id": "14",
+        "cityId": "1",
+        "name": "Другой ПВЗ",
+        "kind": "storage_pvz",
+        "active": true,
+        "mode": "physical",
+        "packingMinutes": 0
+      },
+      "active": true,
+      "acceptsOrders": true,
+      "acceptsReturns": true,
+      "openingHours": [
+        {
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "capacity": {
+        "totalSlots": 150,
+        "storageQuotaSlots": 100,
+        "ordinaryUsedSlots": 0,
+        "pickupUsedSlots": 0,
+        "inboundReservedSlots": 0
+      }
+    }
+  ],
+  "sellers": [
+    {
+      "id": "2",
+      "name": "Синтетический продавец"
+    }
+  ],
+  "seller-skus": [
+    {
+      "id": "201",
+      "sellerId": "2",
+      "skuValue": "Кружка"
+    },
+    {
+      "id": "202",
+      "sellerId": "2",
+      "skuValue": "Книга"
+    },
+    {
+      "id": "203",
+      "sellerId": "2",
+      "skuValue": "Лампа"
+    },
+    {
+      "id": "204",
+      "sellerId": "2",
+      "skuValue": "Чай"
+    },
+    {
+      "id": "205",
+      "sellerId": "2",
+      "skuValue": "Медленный товар"
+    },
+    {
+      "id": "206",
+      "sellerId": "2",
+      "skuValue": "Последняя единица"
+    }
+  ],
+  "products": [
+    {
+      "id": "101",
+      "sellerId": "2",
+      "sellerSku": "201",
+      "name": "Кружка",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 59000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    },
+    {
+      "id": "102",
+      "sellerId": "2",
+      "sellerSku": "202",
+      "name": "Книга",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 60000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    },
+    {
+      "id": "103",
+      "sellerId": "2",
+      "sellerSku": "203",
+      "name": "Лампа",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 61000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    },
+    {
+      "id": "104",
+      "sellerId": "2",
+      "sellerSku": "204",
+      "name": "Чай",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 62000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    },
+    {
+      "id": "105",
+      "sellerId": "2",
+      "sellerSku": "205",
+      "name": "Медленный товар",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 63000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    },
+    {
+      "id": "106",
+      "sellerId": "2",
+      "sellerSku": "206",
+      "name": "Последняя единица",
+      "weightGrams": 300,
+      "slotsPerUnit": 1,
+      "salePriceMinor": 64000,
+      "unitCostMinor": 26000,
+      "widthM": 0.2,
+      "heightM": 0.15,
+      "depthM": 0.1
+    }
+  ],
+  "batches": [
+    {
+      "id": "41",
+      "sellerId": "2",
+      "productId": "101",
+      "storagePointId": "11",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "42",
+      "sellerId": "2",
+      "productId": "102",
+      "storagePointId": "21",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 50,
+      "availableQuantity": 50,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 50,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "43",
+      "sellerId": "2",
+      "productId": "103",
+      "storagePointId": "11",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 4,
+      "availableQuantity": 4,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 4,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "44",
+      "sellerId": "2",
+      "productId": "104",
+      "storagePointId": "11",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 10,
+      "availableQuantity": 10,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 10,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "45",
+      "sellerId": "2",
+      "productId": "105",
+      "storagePointId": "12",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 5,
+      "availableQuantity": 5,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 5,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "46",
+      "sellerId": "2",
+      "productId": "106",
+      "storagePointId": "11",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 1,
+      "availableQuantity": 1,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 1,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    },
+    {
+      "id": "47",
+      "sellerId": "2",
+      "productId": "106",
+      "storagePointId": "21",
+      "receivedAt": "2026-01-05T09:00:00Z",
+      "receivedQuantity": 50,
+      "availableQuantity": 50,
+      "reservedQuantity": 0,
+      "packedQuantity": 0,
+      "quarantinedQuantity": 0,
+      "usedSlots": 50,
+      "tariffVersionId": "51",
+      "storageRateMinorPerSlotDay": 200
+    }
+  ],
+  "trips": [
+    {
+      "id": "31",
+      "fromNodeId": "11",
+      "toNodeId": "13",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T12:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 180,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "11",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "13",
+          "offsetMinutes": 180
+        }
+      ]
+    },
+    {
+      "id": "32",
+      "fromNodeId": "11",
+      "toNodeId": "13",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T14:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 180,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 2000,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "11",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "13",
+          "offsetMinutes": 180
+        }
+      ]
+    },
+    {
+      "id": "33",
+      "fromNodeId": "21",
+      "toNodeId": "22",
+      "mode": "simulated",
+      "type": "linehaul",
+      "departureAt": "2026-01-05T10:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 3500,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "21",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "22",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "fromNodeId": "22",
+      "toNodeId": "13",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T12:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "22",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "13",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "35",
+      "fromNodeId": "13",
+      "toNodeId": "11",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T17:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "13",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "11",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "36",
+      "fromNodeId": "11",
+      "toNodeId": "21",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T18:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "11",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "21",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "37",
+      "fromNodeId": "12",
+      "toNodeId": "21",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T18:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "12",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "21",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "38",
+      "fromNodeId": "13",
+      "toNodeId": "12",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T17:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 1200,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "13",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "12",
+          "offsetMinutes": 60
+        }
+      ]
+    },
+    {
+      "id": "39",
+      "fromNodeId": "22",
+      "toNodeId": "13",
+      "mode": "physical",
+      "type": "city_trip",
+      "departureAt": "2026-01-05T14:00:00Z",
+      "frequency": "daily",
+      "durationMinutes": 60,
+      "cutoffMinutes": 0,
+      "capacitySlots": 100,
+      "backgroundSlots": 0,
+      "costMinor": 2000,
+      "distanceMeters": 10000,
+      "stops": [
+        {
+          "nodeId": "22",
+          "offsetMinutes": 0
+        },
+        {
+          "nodeId": "13",
+          "offsetMinutes": 60
+        }
+      ]
+    }
+  ],
+  "tariffs": [
+    {
+      "id": "51",
+      "currency": "RUB",
+      "effectiveFrom": "2026-01-01T00:00:00Z",
+      "storageThresholdDays": 10,
+      "maximumDeliveryMinutes": 4320,
+      "rates": [
+        {
+          "code": "storage_slot_day",
+          "unit": "slot_day",
+          "amount": 200
+        },
+        {
+          "code": "handling",
+          "unit": "order",
+          "amount": 500
+        },
+        {
+          "code": "city_trip",
+          "unit": "order",
+          "amount": 1200
+        },
+        {
+          "code": "intercity",
+          "unit": "order",
+          "amount": 3500
+        },
+        {
+          "code": "extra_stop",
+          "unit": "stop",
+          "amount": 800
+        },
+        {
+          "code": "issue_reward",
+          "unit": "order",
+          "amount": 100
+        },
+        {
+          "code": "commission",
+          "unit": "basis_point",
+          "amount": 1000
+        }
+      ]
+    }
+  ]
+}
