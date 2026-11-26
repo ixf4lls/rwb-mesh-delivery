@@ -1,7 +1,6 @@
 import { sellerPanels, useSellerWorkspace } from '../../hooks/useSellerWorkspace';
 import { Button } from '../Button/Button';
 import { FormField } from '../FormField/FormField';
-import { NoticeInbox } from '../NoticeInbox/NoticeInbox';
 import { QueryNotice } from '../QueryNotice/QueryNotice';
 import { SellerCatalog } from '../SellerCatalog/SellerCatalog';
 import { SellerFinance } from '../SellerFinance/SellerFinance';
@@ -48,7 +47,6 @@ export function SellerWorkspace() {
                     {view.panel === 'orders' && <SellerOrders key={key} {...scope} />}
                     {view.panel === 'economics' && <SellerFinance key={key} {...scope} clock={view.demo.currentData?.clock} />}
                 </>}
-                <NoticeInbox key={view.demoRunId} demoRunId={view.demoRunId} />
             </>}
         </div>
     );

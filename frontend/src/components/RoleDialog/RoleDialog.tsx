@@ -14,7 +14,8 @@ type RoleDialogProps = {
 
 export function RoleDialog({ open, currentRole, onClose, onSelect }: RoleDialogProps) {
     return (
-        <Dialog title="Демонстрационная роль" open={open} onClose={onClose}>
+        <Dialog title="Выбрать роль" open={open} onClose={onClose}>
+            <Button variant="ghost" className={styles.close} aria-label="Закрыть выбор роли" onClick={onClose}>✕</Button>
             <ul className={styles.roles}>
                 {demoRoles.map((role) => (
                     <li key={role.id}>
@@ -26,7 +27,6 @@ export function RoleDialog({ open, currentRole, onClose, onSelect }: RoleDialogP
                     </li>
                 ))}
             </ul>
-            <Button variant="secondary" onClick={onClose}>Закрыть</Button>
         </Dialog>
     );
 }

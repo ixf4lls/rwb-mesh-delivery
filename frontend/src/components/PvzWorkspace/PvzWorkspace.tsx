@@ -1,7 +1,6 @@
 import { usePvzContext } from '../../hooks/usePvzContext';
 import { Button } from '../Button/Button';
 import { FormField } from '../FormField/FormField';
-import { NoticeInbox } from '../NoticeInbox/NoticeInbox';
 import { PvzCapacity } from '../PvzCapacity/PvzCapacity';
 import { PvzOrders } from '../PvzOrders/PvzOrders';
 import { PvzStock } from '../PvzStock/PvzStock';
@@ -56,7 +55,6 @@ export function PvzWorkspace() {
                     )}
                 </>
             )}
-            {view.scopeReady && <NoticeInbox key={view.demoRunId} demoRunId={view.demoRunId} />}
         </div>
     );
 }

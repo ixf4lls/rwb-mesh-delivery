@@ -9,5 +9,5 @@ export function useNoticeInbox(demoRunId?: string) {
         { pollingInterval: 15000 });
     const [mark, update] = exceptionApi.useReadNoticeMutation();
 
-    return { setOpen, unread, setUnread, notices, update, mark: (notificationId: string) => void mark({ notificationId, demoRunId }) };
+    return { open, setOpen, unread, setUnread, notices, update, mark: (notificationId: string) => void mark({ notificationId, demoRunId }) };
 }

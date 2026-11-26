@@ -1,3 +1,4 @@
+import { NoticeInbox } from '../NoticeInbox/NoticeInbox';
 import { Outlet } from 'react-router';
 import { useDemoRole } from '../../hooks/useDemoRole';
 import { RoleDialog } from '../RoleDialog/RoleDialog';
@@ -12,6 +13,7 @@ export function AppLayout() {
             <a className={styles.skip} href="#main-content">Перейти к содержимому</a>
             <SideRail onOpenRoleDialog={role.openDialog} />
             <div className={styles.content}>
+                <NoticeInbox />
                 <Outlet />
             </div>
             <RoleDialog open={role.dialogOpen} currentRole={role.currentRole} onClose={role.closeDialog} onSelect={role.selectRole} />
