@@ -1,0 +1,313 @@
+[
+  {
+    "step": 1,
+    "caseKey": "city_mesh",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "1500000003",
+      "items": [
+        {
+          "productId": "1100000001",
+          "quantity": 1
+        }
+      ]
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001"
+    },
+    "expected": {
+      "status": 200,
+      "option": "mesh_only",
+      "mode": "city_mesh",
+      "sourceBatch": "1600000001",
+      "sourceRemaining": 4,
+      "shipmentStatus": [
+        "packed",
+        "in_transit",
+        "ready",
+        "issued"
+      ],
+      "cutoffAt": "2026-01-05T15:00:00+03:00",
+      "readyAt": "2026-01-05T18:00:00+03:00",
+      "buyerFeeMinor": 1200,
+      "etaMinutes": 540
+    }
+  },
+  {
+    "step": 2,
+    "caseKey": "intercity_hub",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "1500000005",
+      "items": [
+        {
+          "productId": "1100000002",
+          "quantity": 1
+        }
+      ]
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001"
+    },
+    "expected": {
+      "status": 200,
+      "options": [
+        {
+          "id": "1040000001",
+          "policy": "mesh_only",
+          "feasible": false,
+          "reasons": [
+            "insufficient_stock"
+          ]
+        },
+        {
+          "id": "1040000002",
+          "policy": "hub_only",
+          "feasible": true,
+          "estimatedCostMinor": 6700,
+          "buyerFeeMinor": 1800,
+          "etaMinutes": 1980
+        }
+      ],
+      "path": [
+        "1920000001",
+        "1920000002",
+        "1920000003",
+        "1500000005"
+      ],
+      "hybrid": {
+        "feasible": true,
+        "buyerFeeMinor": 2200,
+        "etaMinutes": 2340
+      }
+    }
+  },
+  {
+    "step": 3,
+    "caseKey": "mixed_return",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "ReturnCreate",
+    "direction": "request",
+    "method": "POST",
+    "path": "/returns",
+    "body": {
+      "orderId": "1010000003",
+      "returnPointId": "1500000002",
+      "reason": "Демонстрационный возврат одной позиции",
+      "lines": [
+        {
+          "orderItemId": "1800000001",
+          "quantity": 1
+        }
+      ]
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001",
+      "Idempotency-Key": "demo-mixed-return-v1"
+    },
+    "expected": {
+      "issuedLines": 2,
+      "returnAccepted": true,
+      "resellableQuantity": 1,
+      "quarantinedQuantity": 0,
+      "availableDelta": {
+        "1100000001": 1,
+        "1100000002": 0
+      },
+      "reversedLine": "1100000001",
+      "secondLineRemainsSold": true,
+      "mode": "mixed",
+      "readyAfterLastShipment": true
+    }
+  },
+  {
+    "step": 4,
+    "caseKey": "trip_disruption",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "IncidentCreate",
+    "direction": "request",
+    "method": "POST",
+    "path": "/incidents",
+    "body": {
+      "orderId": "1010000004",
+      "shipmentId": "1010000004",
+      "type": "trip_disrupted",
+      "failureTarget": {
+        "tripId": "1050000002"
+      },
+      "description": "Рейс отменён после сборки"
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001",
+      "Idempotency-Key": "demo-disruption-v1"
+    },
+    "expected": {
+      "status": "rerouted",
+      "failedTrip": "1050000002",
+      "alternativeTrip": "1050000004",
+      "newRevision": {
+        "previousRevision": 1,
+        "revision": 2,
+        "lastKnownNodeId": "1920000003",
+        "deltaCostMinor": 800,
+        "deltaEtaMinutes": 120
+      },
+      "notification": "route_changed",
+      "buyerFeeMinorUnchanged": true,
+      "promisedReadyAtUnchanged": true,
+      "duplicateReserve": false
+    }
+  },
+  {
+    "step": 5,
+    "caseKey": "long_storage",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "ClockAdvance",
+    "direction": "request",
+    "method": "POST",
+    "path": "/demo/clock/advances",
+    "body": {
+      "to": "2026-01-15T09:00:00Z"
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001",
+      "Idempotency-Key": "demo-storage-clock-v1"
+    },
+    "expected": {
+      "batch": "1600000002",
+      "orders": 0,
+      "billableSlotDays": 50,
+      "accruedMinor": 10000,
+      "storageCase": "open",
+      "notification": "long_storage",
+      "decision": {
+        "contract": "frontend",
+        "schema": "StorageDecision",
+        "direction": "request",
+        "body": {
+          "action": "transfer_to_hub",
+          "reason": "Партия не востребована",
+          "expectedVersion": 1
+        }
+      },
+      "afterTransfer": {
+        "pointSlotsFreed": 5,
+        "caseStatus": "closed"
+      }
+    }
+  },
+  {
+    "step": 6,
+    "caseKey": "local_shelf",
+    "role": "pvz_operator",
+    "contract": "frontend",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "1500000001",
+      "items": [
+        {
+          "productId": "1100000004",
+          "quantity": 1
+        }
+      ]
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001"
+    },
+    "expected": {
+      "option": "mesh_only",
+      "mode": "local_shelf",
+      "segmentType": "on_site",
+      "packedStatus": "ready",
+      "beforeIssuedAvailable": 9,
+      "afterIssuedAvailable": 9,
+      "issuedPhysicalDelta": -1,
+      "buyerFeeMinor": 0,
+      "etaMinutes": 0
+    }
+  },
+  {
+    "step": 7,
+    "caseKey": "last_unit_race",
+    "role": "dispatcher",
+    "contract": "frontend",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "1500000003",
+      "items": [
+        {
+          "productId": "1100000001",
+          "quantity": 1
+        }
+      ]
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001"
+    },
+    "expected": {
+      "concurrentQuotes": 2,
+      "availableUnits": 1,
+      "winnerCount": 1,
+      "loser": "stale_quote_or_reservation_conflict",
+      "loserPreliminaryReservationsReleased": true,
+      "retry": {
+        "quote": "fresh",
+        "option": "hub_only",
+        "sameAcceptedOrderNotSilentlySwitched": true
+      }
+    }
+  },
+  {
+    "step": 8,
+    "caseKey": "capacity_conflict",
+    "role": "pvz_operator",
+    "contract": "frontend",
+    "schema": "BatchReceipt",
+    "direction": "request",
+    "method": "POST",
+    "path": "/batches",
+    "body": {
+      "productId": "1100000001",
+      "storagePointId": "1500000001",
+      "quantity": 5,
+      "externalLotRef": "demo-capacity-reject"
+    },
+    "headers": {
+      "X-Demo-Run-Id": "1001000001",
+      "Idempotency-Key": "demo-capacity-reject-v1"
+    },
+    "expected": {
+      "status": 409,
+      "contentType": "application/problem+json",
+      "code": "capacity_exceeded",
+      "context": {
+        "requiredSlots": 5,
+        "availableSlots": 4
+      },
+      "batchCreated": false,
+      "beforeAfter": {
+        "storageUsedSlots": 6,
+        "availableStorageSlots": 4
+      }
+    }
+  }
+]

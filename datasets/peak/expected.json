@@ -1,0 +1,24 @@
+{
+  "demandCanonicalSha256": "45287fd898d6acd475e6794da37fceefed9e1bd032273eae27f113e84d2826f0",
+  "orderCount": 1600,
+  "lineCount": 1600,
+  "storagePointOrderCount": 960,
+  "otherPointOrderCount": 640,
+  "historyRows": 4032,
+  "numericIds": true,
+  "sharedCatalogSha256": "cd470823d77c0befda9bbc20e8a40f7f8bcbc535d602017b431492d9bb4e31ba",
+  "productGeometryUnit": "m",
+  "control": {
+    "capacity": {
+      "ordinaryUsedSlots": 90,
+      "totalSlots": 100,
+      "availableStorageSlots": 10
+    },
+    "rejectedReceipt": {
+      "status": 409,
+      "code": "capacity_exceeded"
+    },
+    "delayMinutes": 25,
+    "backgroundQueueSeparate": true
+  }
+}

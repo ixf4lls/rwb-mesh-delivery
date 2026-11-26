@@ -1,0 +1,11 @@
+city_id,city_code,city_name,time_zone,hub_id,sorting_center_id
+7400000001,moscow,Москва,Europe/Moscow,7900000001,7900000004
+7400000002,saint_petersburg,Санкт-Петербург,Europe/Moscow,7900000002,7900000005
+7400000003,yekaterinburg,Екатеринбург,Asia/Yekaterinburg,7900000003,7900000006
+7400000004,kazan,Казань,Europe/Moscow,7900000001,7900000007
+7400000005,nizhny_novgorod,Нижний Новгород,Europe/Moscow,7900000001,7900000008
+7400000006,samara,Самара,Europe/Samara,7900000001,7900000009
+7400000007,cheboksary,Чебоксары,Europe/Moscow,7900000001,7900000010
+7400000008,yoshkar_ola,Йошкар-Ола,Europe/Moscow,7900000001,7900000011
+7400000009,volzhsk,Волжск,Europe/Moscow,7900000001,7900000012
+7400000010,innopolis,Иннополис,Europe/Moscow,7900000001,7900000013

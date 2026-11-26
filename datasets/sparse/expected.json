@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "2.0.0",
+  "scenario": "sparse",
+  "seed": 42,
+  "controlDateFit": {
+    "localDate": "2026-01-12",
+    "orderIds": [
+      "4010000001",
+      "4010000002"
+    ],
+    "tripId": "4050000001",
+    "segmentType": "city_trip",
+    "requestedSlots": 2,
+    "backgroundSlots": 8,
+    "freeTripSlots": 4,
+    "incrementalStops": 0,
+    "costItems": [
+      {
+        "category": "trip_share",
+        "amountMinor": 1200
+      }
+    ],
+    "plannedPickupPointIds": [
+      "4500000002",
+      "4500000003"
+    ],
+    "reservedStockUnits": 2
+  },
+  "controlDateExtraStop": {
+    "localDate": "2026-01-19",
+    "orderIds": [
+      "4010000003"
+    ],
+    "tripId": "4050000002",
+    "segmentType": "city_trip",
+    "requestedSlots": 1,
+    "backgroundSlots": 10,
+    "freeTripSlots": 0,
+    "incrementalStops": 1,
+    "distanceMeters": 8200,
+    "waitMinutes": 18,
+    "costItems": [
+      {
+        "category": "trip_share",
+        "amountMinor": 600
+      },
+      {
+        "category": "extra_stop",
+        "amountMinor": 950
+      }
+    ],
+    "changedStopIds": [
+      "4800000002"
+    ],
+    "reservedStockUnits": 1
+  },
+  "assumptions": {
+    "tripCapacitySlots": 10,
+    "extraStopRateMinor": 950,
+    "extraStopDistanceMeters": 8200,
+    "extraStopMinutes": 18,
+    "tariffVersionId": "4800000003",
+    "currency": "RUB",
+    "commonSchedule": "daily city trips, 09:00 local"
+  },
+  "fixtureKeys": [
+    {
+      "request_key": "4010000001",
+      "fixture_key": "sparse-order-000001"
+    },
+    {
+      "request_key": "4010000002",
+      "fixture_key": "sparse-order-000002"
+    },
+    {
+      "request_key": "4010000003",
+      "fixture_key": "sparse-order-000003"
+    }
+  ]
+}

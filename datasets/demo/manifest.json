@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "2.0.0",
+  "id": "demo",
+  "seed": 42,
+  "period": {
+    "from": "2026-01-05T09:00:00Z",
+    "to": "2026-01-15T09:00:00Z",
+    "timezone": "Europe/Moscow"
+  },
+  "initialClock": "2026-01-05T09:00:00Z",
+  "start": {
+    "cityId": "1400000002",
+    "pickupPointId": "1500000001",
+    "at": "2026-01-05T09:00:00Z",
+    "caseKey": "city_mesh"
+  },
+  "counts": {
+    "pointCount": 6,
+    "preparedOrderCount": 7,
+    "orderIntentCount": 7,
+    "lineCount": 8,
+    "orderCount": 7,
+    "caseCount": 8
+  },
+  "files": [
+    {
+      "path": "cities.csv",
+      "sha256": "2463fe122dfb33db8382dc59e228a58407dc9cb95d5f880dd15acc4f5f134756",
+      "rows": 2
+    },
+    {
+      "path": "nodes.csv",
+      "sha256": "68bc3d21e98c62b82f4151996976c9cd4ff8278f0cf71747cefdf6391197192d",
+      "rows": 9
+    },
+    {
+      "path": "points.csv",
+      "sha256": "2f9b6c65e74f925f9c83ef256217bf10c06dab1c4bf7c855d03aaefeb5a2e1ae",
+      "rows": 6
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "521984c598d3c689caf287e7e21ebe0774c9022d347ae28b40ad8f5dc1436045",
+      "rows": 3
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "475cd2cbeee6f44c4eabcf9136f962fa212e7847b21a1161dc18dc008603f70e",
+      "rows": 12
+    },
+    {
+      "path": "products.csv",
+      "sha256": "2fae5acf6f097899725527503939b250c1784c01f5be172fbe88b893cdc54c6e",
+      "rows": 12
+    },
+    {
+      "path": "placement_pairs.csv",
+      "sha256": "e6b1ed926881bac1d2c033c264b6778278ad5dc358b403d325e9c388e692ecb3",
+      "rows": 8
+    },
+    {
+      "path": "trips.csv",
+      "sha256": "8f1e7387d8d71ddc5d23ddcab3977489eaa7f986e60c758765ec8d74af2a5e27",
+      "rows": 4
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "5ec57be1d7400a9d81ecf82ad4268e1aa2de6442ae41a90c1441e8d64c0fbd25",
+      "rows": 7
+    },
+    {
+      "path": "tariff.json",
+      "sha256": "0cbb14e545910ff2485104b7e0f18e078f357230e07ab1293acfba6ede39dd25",
+      "rows": 1
+    },
+    {
+      "path": "api_examples.json",
+      "sha256": "21f67b90760238af0445e31a9be8b32f614f39eb594834a11e5a206ed0771f3d",
+      "rows": 8
+    },
+    {
+      "path": "expected.json",
+      "sha256": "02daf13d1050cbdea8b99e0f4fecf2b14ed0da16418a3c94004e05333b32f6ca",
+      "rows": 1
+    }
+  ],
+  "sharedCatalog": {
+    "path": "datasets/shared/catalog_scenarios_1_5.json",
+    "sha256": "cd470823d77c0befda9bbc20e8a40f7f8bcbc535d602017b431492d9bb4e31ba"
+  },
+  "apiContracts": {
+    "frontend": "docs/openapi/frontend.yaml",
+    "internal": "docs/openapi/internal.yaml",
+    "version": "0.1.0"
+  },
+  "idRules": "^[0-9]+$",
+  "reproduction": "python3 scripts/datasets/agents/demo_cases.py generate --seed 42"
+}

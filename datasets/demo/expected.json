@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "2.0",
+  "cases": [
+    {
+      "key": "city_mesh",
+      "requestKeys": [
+        "1010000001"
+      ],
+      "initialBatch": "1600000001",
+      "expectedAvailableAfterDispatch": 4,
+      "expectedIssued": 1
+    },
+    {
+      "key": "intercity_hub",
+      "requestKeys": [
+        "1010000002"
+      ],
+      "expectedHubOnly": true,
+      "meshOnlyReason": "insufficient_stock",
+      "comparison": {
+        "ordinary": {
+          "buyerFeeMinor": 1800,
+          "etaMinutes": 1980
+        },
+        "hybrid": {
+          "buyerFeeMinor": 2200,
+          "etaMinutes": 2340
+        }
+      }
+    },
+    {
+      "key": "mixed_return",
+      "requestKeys": [
+        "1010000003"
+      ],
+      "lineCount": 2,
+      "returnedProduct": "1100000001",
+      "returnedQuantity": 1,
+      "resellableQuantity": 1,
+      "quarantinedQuantity": 0
+    },
+    {
+      "key": "trip_disruption",
+      "requestKeys": [
+        "1010000004"
+      ],
+      "failedTrip": "1050000002",
+      "alternateTrip": "1050000004",
+      "expectedRouteRevision": 2,
+      "duplicateReserve": false
+    },
+    {
+      "key": "long_storage",
+      "requestKeys": [],
+      "initialClock": "2026-01-05T09:00:00Z",
+      "advanceTo": "2026-01-15T09:00:00Z",
+      "quantity": 5,
+      "slotsPerUnit": 1,
+      "rateMinorPerSlotDay": 200,
+      "billableSlotDays": 50,
+      "accruedMinor": 10000
+    },
+    {
+      "key": "local_shelf",
+      "requestKeys": [
+        "1010000005"
+      ],
+      "beforeIssueAvailable": 9,
+      "afterIssueAvailable": 9,
+      "issuedPhysicalDelta": -1
+    },
+    {
+      "key": "last_unit_race",
+      "requestKeys": [
+        "1010000006",
+        "1010000007"
+      ],
+      "availableUnits": 1,
+      "expectedWinnerCount": 1,
+      "retryOption": "hub_only"
+    },
+    {
+      "key": "capacity_conflict",
+      "requestKeys": [],
+      "requiredSlots": 5,
+      "availableSlots": 4,
+      "status": 409,
+      "code": "capacity_exceeded"
+    }
+  ],
+  "unitChecks": {
+    "cityMesh": {
+      "received": 5,
+      "dispatched": 1,
+      "remainingAtS1": 4,
+      "issuedAtP2": 1
+    },
+    "returns": {
+      "soldLines": 2,
+      "returnedLines": 1,
+      "remainingSoldLines": 1
+    }
+  },
+  "sharedCatalog": {
+    "path": "datasets/shared/catalog_scenarios_1_5.json",
+    "sha256": "cd470823d77c0befda9bbc20e8a40f7f8bcbc535d602017b431492d9bb4e31ba",
+    "skuValues": [
+      "mug-01",
+      "book-01",
+      "lamp-01",
+      "tea-01",
+      "mc-01",
+      "mc-02",
+      "mb-01",
+      "mb-02",
+      "lc-01",
+      "lc-02",
+      "lb-01",
+      "lb-02"
+    ]
+  }
+}

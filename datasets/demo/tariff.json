@@ -1,0 +1,34 @@
+{
+  "id": "1975000001",
+  "currency": "RUB",
+  "effectiveFrom": "2026-01-01T00:00:00Z",
+  "storageThresholdDays": 10,
+  "maximumDeliveryMinutes": 4320,
+  "rates": [
+    {
+      "code": "storage_slot_day",
+      "unit": "slot_day",
+      "amount": 200
+    },
+    {
+      "code": "handling",
+      "unit": "order",
+      "amount": 500
+    },
+    {
+      "code": "city_trip",
+      "unit": "shipment",
+      "amount": 1200
+    },
+    {
+      "code": "intercity",
+      "unit": "shipment",
+      "amount": 3500
+    },
+    {
+      "code": "extra_stop",
+      "unit": "stop",
+      "amount": 800
+    }
+  ]
+}

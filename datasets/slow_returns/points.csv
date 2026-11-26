@@ -1,0 +1,7 @@
+pickup_point_id,city_id,point_code,point_name,kind,accepts_orders,accepts_returns
+5500000001,5400000001,pvz-b-01,ПВЗ 1,storage_pvz,true,true
+5500000002,5400000001,pvz-b-02,ПВЗ 2,storage_pvz,true,true
+5500000003,5400000001,pvz-b-03,ПВЗ 3,pickup_only,true,true
+5500000004,5400000001,pvz-b-04,ПВЗ 4,pickup_only,true,true
+5500000005,5400000001,pvz-b-05,ПВЗ 5,pickup_only,true,true
+5500000006,5400000001,pvz-b-06,ПВЗ 6,pickup_only,true,true

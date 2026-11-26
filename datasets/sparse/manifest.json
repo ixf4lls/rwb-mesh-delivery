@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "sparse",
+  "seed": 42,
+  "period": {
+    "start": "2026-01-05",
+    "days": 28,
+    "historyDays": 56,
+    "timezone": "Europe/Moscow"
+  },
+  "start": {
+    "cityId": "4400000001",
+    "pickupPointId": "4500000001",
+    "initialClock": "2026-01-05T00:00:00Z",
+    "recordKey": "4010000001"
+  },
+  "counts": {
+    "pointCount": 6,
+    "preparedOrderCount": 400,
+    "orderIntentCount": 400,
+    "lineCount": 400,
+    "historyRows": 4032,
+    "zeroDemandRows": 3670
+  },
+  "files": [
+    {
+      "path": "api_examples.json",
+      "sha256": "bb9fa9aa31911cf1d039b7678b882d5f9d6f5a36da0237348e1c408ca159ef95"
+    },
+    {
+      "path": "cities.csv",
+      "sha256": "0e3ff60a303b9662f4f768edde1035bd7368584e2bafd2a6fc625f693c5616ca",
+      "rows": 1
+    },
+    {
+      "path": "demand_history.csv",
+      "sha256": "b89deecd7f4bce83d151b139e301da0c68b764ad11d9d72d51c55e531ec48feb",
+      "rows": 4032
+    },
+    {
+      "path": "expected.json",
+      "sha256": "10956d24911a8f91de1e7f7ff33e0aa0371c7b2a2305b838d1bf4467ecf6da76"
+    },
+    {
+      "path": "order_key_map.csv",
+      "sha256": "985c4f4cc30b74a03ce63c82ffcfa717e680335b3d60b923baaad5794f586323",
+      "rows": 400
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "76d485bc7a2abdc9da545424c86407aa92cffb2eff9c517f6d968711dfe8f954",
+      "rows": 400
+    },
+    {
+      "path": "points.csv",
+      "sha256": "9f99d13cd02d88fffa441745b5a841890aae8eacccdfb2f199d58c40eb0081a0",
+      "rows": 6
+    },
+    {
+      "path": "products.csv",
+      "sha256": "83f2164953338f6f6ff060a52ae67e74fec68738db9a98fdce4d043015ea2a19",
+      "rows": 12
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "45cb0abda7b566e908e2b1ddc557289dc3a44082e7b139f13682dedb49af3c9b",
+      "rows": 12
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "6eefae64fe292cbf11ebde5914bca2ce6c00e8ab9fdaefbd77c767d1f0bc2f37",
+      "rows": 3
+    },
+    {
+      "path": "trip_key_map.csv",
+      "sha256": "5cebed24736eb28c3900dfe6c21b79c50f4f81d560aae8e45b051da6379006cc",
+      "rows": 2
+    }
+  ]
+}

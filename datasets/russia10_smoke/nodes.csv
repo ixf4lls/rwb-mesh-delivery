@@ -1,0 +1,14 @@
+node_id,city_id,node_code,node_name,kind,mode
+7900000001,7400000001,hub-1,Региональный хаб 1,hub,simulated
+7900000002,7400000002,hub-2,Региональный хаб 2,hub,simulated
+7900000003,7400000003,hub-3,Региональный хаб 3,hub,simulated
+7900000004,7400000001,sc-moscow,Сортировочный центр — Москва,sorting_center,simulated
+7900000005,7400000002,sc-saint_petersburg,Сортировочный центр — Санкт-Петербург,sorting_center,simulated
+7900000006,7400000003,sc-yekaterinburg,Сортировочный центр — Екатеринбург,sorting_center,simulated
+7900000007,7400000004,sc-kazan,Сортировочный центр — Казань,sorting_center,simulated
+7900000008,7400000005,sc-nizhny_novgorod,Сортировочный центр — Нижний Новгород,sorting_center,simulated
+7900000009,7400000006,sc-samara,Сортировочный центр — Самара,sorting_center,simulated
+7900000010,7400000007,sc-cheboksary,Сортировочный центр — Чебоксары,sorting_center,simulated
+7900000011,7400000008,sc-yoshkar_ola,Сортировочный центр — Йошкар-Ола,sorting_center,simulated
+7900000012,7400000009,sc-volzhsk,Сортировочный центр — Волжск,sorting_center,simulated
+7900000013,7400000010,sc-innopolis,Сортировочный центр — Иннополис,sorting_center,simulated

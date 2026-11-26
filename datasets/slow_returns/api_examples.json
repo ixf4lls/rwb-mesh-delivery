@@ -1,0 +1,51 @@
+{
+  "apiRecords": [
+    {
+      "contract": "frontend.yaml",
+      "schema": "ReturnCreate",
+      "direction": "request",
+      "method": "POST",
+      "path": "/returns",
+      "body": {
+        "orderId": "5010000011",
+        "returnPointId": "5500000001",
+        "reason": "Товар не подошёл",
+        "lines": [
+          {
+            "orderItemId": "5800000001",
+            "quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "contract": "frontend.yaml",
+      "schema": "ReturnEvent",
+      "direction": "request",
+      "method": "POST",
+      "path": "/returns/5700000001/events",
+      "body": {
+        "type": "received_from_customer",
+        "expectedVersion": 1
+      }
+    },
+    {
+      "contract": "frontend.yaml",
+      "schema": "ReturnInspection",
+      "direction": "request",
+      "method": "POST",
+      "path": "/returns/5700000001/events",
+      "body": {
+        "type": "inspected",
+        "expectedVersion": 2,
+        "lines": [
+          {
+            "orderItemId": "5800000001",
+            "resellableQuantity": 1,
+            "quarantinedQuantity": 0
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+node_id,city_id,node_code,node_name,kind,active,mode
+2920000001,2400000002,city-a-hub,Хаб А,hub,true,simulated
+2920000002,2400000001,city-b-sc,СЦ Б,sorting_center,true,city_mesh
+2500000001,2400000001,dense-p1,ПВЗ Б-1,storage_pvz,true,city_mesh
+2500000002,2400000001,dense-p2,ПВЗ Б-2,storage_pvz,true,city_mesh
+2500000003,2400000001,dense-p3,ПВЗ Б-3,pickup_only,true,city_mesh
+2500000004,2400000001,dense-p4,ПВЗ Б-4,pickup_only,true,city_mesh
+2500000005,2400000001,dense-p5,ПВЗ Б-5,pickup_only,true,city_mesh
+2500000006,2400000001,dense-p6,ПВЗ Б-6,pickup_only,true,city_mesh
