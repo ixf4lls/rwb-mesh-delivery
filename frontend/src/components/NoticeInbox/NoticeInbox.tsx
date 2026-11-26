@@ -23,10 +23,10 @@ export function NoticeInbox() {
                 <span className={styles.tooltip} aria-hidden="true">Уведомления</span>
             </Button>
             <Dialog title="Уведомления" open={view.open} onClose={() => view.setOpen(false)}>
+                <Button variant="ghost" className={styles.close} aria-label="Закрыть уведомления" onClick={() => view.setOpen(false)}>✕</Button>
                 <div className={styles.content}>
                     <div className={styles.filters}>
                         <label><input type="checkbox" checked={view.unread} onChange={(event) => view.setUnread(event.currentTarget.checked)} /> Только непрочитанные</label>
-                        <Button variant="ghost" aria-label="Закрыть уведомления" onClick={() => view.setOpen(false)}>✕</Button>
                     </div>
                     {view.notices.isError && <QueryNotice error={view.notices.error} onRetry={view.notices.refetch} />}
                     {view.update.isError && <QueryNotice error={view.update.error} />}
