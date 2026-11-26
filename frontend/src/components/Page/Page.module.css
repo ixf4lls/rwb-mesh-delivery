@@ -1,6 +1,6 @@
 .page {
     width: min(100%, 88rem);
-    padding: 1rem var(--layout-padding) 1.5rem;
+    padding: 1.5rem var(--layout-padding) 1.5rem;
 }
 
 .header {

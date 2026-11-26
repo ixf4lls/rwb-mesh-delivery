@@ -1,6 +1,6 @@
 .toolbar {
     position: absolute;
-    top: 12px;
+    top: 20px;
     right: var(--layout-padding);
     z-index: 2;
     display: flex;
