@@ -6,7 +6,7 @@
 
 .panel {
     align-self: start;
-    padding: 1rem;
+    padding: 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-surface);
     background: var(--color-surface);

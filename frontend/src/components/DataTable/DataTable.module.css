@@ -6,7 +6,7 @@
 
 .title {
     margin: 0;
-    padding: 20px;
+    padding: 12px 16px;
     font-family: var(--font-heading);
     font-size: 1.2rem;
 }
@@ -22,7 +22,7 @@
 }
 
 .table th, .table td {
-    padding: 0.8rem 20px;
+    padding: 0.625rem 16px;
     border-top: 1px solid var(--color-border);
     text-align: start;
 }

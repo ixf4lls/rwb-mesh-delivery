@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: minmax(16rem, 392px) minmax(0, 1fr);
     align-items: start;
-    gap: 1.25rem;
+    gap: 0.875rem;
 }
 
 .queue {
@@ -81,7 +81,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
 }
 
 @media (max-width: 870px) {
