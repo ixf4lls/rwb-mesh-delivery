@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "dense",
+  "seed": 42,
+  "period": {
+    "start": "2026-01-05",
+    "days": 28,
+    "timeZone": "Europe/Moscow"
+  },
+  "initialClock": "2026-01-05T08:00:00Z",
+  "start": {
+    "cityId": "2400000001",
+    "pickupPointId": "2500000001",
+    "at": "2026-01-05T08:00:00Z",
+    "showcaseKey": "2010000001"
+  },
+  "counts": {
+    "pointCount": 6,
+    "preparedOrderCount": 1600,
+    "orderIntentCount": 1600,
+    "lineCount": 1600,
+    "orderCount": 1600,
+    "historyRows": 4032
+  },
+  "files": [
+    {
+      "path": "cities.csv",
+      "sha256": "af755ad73e6f4e126e654ddf74ca104e0fc9c7cf77845f44da2634c689b5a384",
+      "rows": 2
+    },
+    {
+      "path": "demand_history.csv",
+      "sha256": "978047b6f8bd87d48c837336ccc8e130539ecad147d52f2777ea1fbece77b7d5",
+      "rows": 4032
+    },
+    {
+      "path": "expected.json",
+      "sha256": "a3baa284039004d4c2813af33a072a27bfa3b9ff9d0abc086abda08d35dc4981",
+      "rows": null
+    },
+    {
+      "path": "nodes.csv",
+      "sha256": "8604c402bf3990a169c726342dcd2e53ccc27ee6108d9ceb3b383fbe68ac08e3",
+      "rows": 8
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "e031c505c924276ba66c08e656b71158d55a141db5edbef613b35b9751d2aaf9",
+      "rows": 1600
+    },
+    {
+      "path": "points.csv",
+      "sha256": "5c93378d20561fb0737663d574c1902800a31c50c28de597c5c5421130cce0c9",
+      "rows": 6
+    },
+    {
+      "path": "products.csv",
+      "sha256": "c4ce837f5ef8483c005418cf4a8bd2fce498afece9318a1e1b4687d151fbf426",
+      "rows": 12
+    },
+    {
+      "path": "replenishments.csv",
+      "sha256": "090de4480e53ef6b4b6cf548e05ca26012852453c2f9a6764310a9b638258de6",
+      "rows": 24
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "45200ce5a5388467bcb010a44c8e65bb0644596dc9e0eee0d5c9ef4d65df50d4",
+      "rows": 12
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "86b491645905e7063fa664660c9dce802aa140cd37a6fd96c41a0b4a1f68493d",
+      "rows": 3
+    },
+    {
+      "path": "trips.csv",
+      "sha256": "e015ad44e38f6d9fdc2ad29acce13e57b0eb55b619c838a1961dafbf028d3ef9",
+      "rows": 168
+    }
+  ],
+  "demandCanonicalSha256": "45287fd898d6acd475e6794da37fceefed9e1bd032273eae27f113e84d2826f0",
+  "sharedCatalog": {
+    "path": "datasets/shared/catalog_scenarios_1_5.json",
+    "sha256": "cd470823d77c0befda9bbc20e8a40f7f8bcbc535d602017b431492d9bb4e31ba"
+  },
+  "idRules": "^[0-9]+$",
+  "scenario": {
+    "kind": "dense",
+    "baseDatasetId": null
+  }
+}

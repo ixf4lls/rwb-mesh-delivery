@@ -1,0 +1,16 @@
+{
+  "validation": {
+    "cityCount": 1,
+    "pointCount": 150,
+    "pointDayCount": 150,
+    "orderCount": 29872,
+    "returnIntentCount": 974,
+    "lineCount": 89610,
+    "minOrdersPerPointDay": 150,
+    "maxOrdersPerPointDay": 250,
+    "minLinesPerOrder": 1,
+    "maxLinesPerOrder": 5
+  },
+  "returnIntents": "1/30 per numeric stable request key; actual return execution resolves OrderLine.id in the selected DemoRun",
+  "smokeAndCityOverlap": "same numeric request_key and canonical basket for overlapping Yoshkar-Ola points/days"
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "contract": "frontend.yaml",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "case": "sparse_fit",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "4500000002",
+      "items": [
+        {
+          "productId": "4100000001",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "contract": "frontend.yaml",
+    "schema": "QuoteRequest",
+    "direction": "request",
+    "case": "sparse_extra_stop",
+    "method": "POST",
+    "path": "/quotes",
+    "body": {
+      "pickupPointId": "4500000005",
+      "items": [
+        {
+          "productId": "4100000003",
+          "quantity": 1
+        }
+      ]
+    }
+  }
+]

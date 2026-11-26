@@ -1,0 +1,3 @@
+city_id,city_code,city_name,time_zone
+3400000002,city-a,Город А,Europe/Moscow
+3400000001,city-b,Город Б,Europe/Moscow

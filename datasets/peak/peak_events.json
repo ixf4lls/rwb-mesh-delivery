@@ -1,0 +1,64 @@
+{
+  "parameters": {
+    "point_id": "3500000002",
+    "day": "2026-01-18",
+    "ordinary_used_slots": 90,
+    "total_slots": 100,
+    "storage_quota_slots": 100,
+    "storage_used_slots": 0,
+    "pickup_used_slots": 0,
+    "inbound_reserved_slots": 0,
+    "pre_cutoff_pickup_queue_count": 30,
+    "courier_handover_delay_minutes": 25
+  },
+  "capacity": {
+    "pointId": "3500000002",
+    "asOf": "2026-01-18T09:00:00Z",
+    "totalSlots": 100,
+    "storageQuotaSlots": 100,
+    "storageUsedSlots": 0,
+    "ordinaryUsedSlots": 90,
+    "pickupUsedSlots": 0,
+    "inboundReservedSlots": 0,
+    "availableStorageSlots": 10,
+    "availablePickupSlots": 10
+  },
+  "rejected_receipt": {
+    "contract": "frontend.yaml",
+    "schema": "BatchReceipt",
+    "direction": "request",
+    "body": {
+      "productId": "3100000001",
+      "storagePointId": "3500000002",
+      "quantity": 20,
+      "externalLotRef": "3600000099"
+    },
+    "expected": {
+      "status": 409,
+      "mediaType": "application/problem+json",
+      "code": "capacity_exceeded",
+      "requiredSlots": 20,
+      "availableSlots": 10
+    }
+  },
+  "cutoff_case": {
+    "request_key": "3010000014",
+    "pickup_point_id": "3500000002",
+    "trip_id": "3050000080",
+    "baseline_handover_at": "2026-01-18T09:50:00Z",
+    "delayed_handover_at": "2026-01-18T10:15:00Z",
+    "cutoff_at": "2026-01-18T10:00:00Z",
+    "baseline": "meets cutoff",
+    "peak": "misses cutoff; next daily trip",
+    "sla_next_trip": true
+  },
+  "ordinary_queue": {
+    "event_id": "3800000001",
+    "count": 30,
+    "window_start": "2026-01-18T09:00:00Z",
+    "window_end": "2026-01-18T10:00:00Z",
+    "wait_minutes_baseline": 0,
+    "wait_minutes_peak": 25
+  },
+  "notes": "IDs are numeric strings; route ETA/cost is fixture expectation, not an API execution."
+}

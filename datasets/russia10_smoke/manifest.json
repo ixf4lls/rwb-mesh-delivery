@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "russia10_smoke",
+  "seed": 42,
+  "period": {
+    "startLocalDate": "2026-01-05",
+    "days": 1,
+    "timezone": "per-city"
+  },
+  "start": {
+    "cityId": "7400000008",
+    "pickupPointId": "7500020801",
+    "initialClock": "2026-01-05T00:00:00+03:00",
+    "showcaseRequestKey": "80000001000"
+  },
+  "counts": {
+    "pointCount": 28,
+    "preparedOrderCount": 5590,
+    "orderIntentCount": 194,
+    "lineCount": 16794,
+    "cityPointCounts": {
+      "moscow": 3,
+      "saint_petersburg": 3,
+      "yekaterinburg": 3,
+      "kazan": 3,
+      "nizhny_novgorod": 3,
+      "samara": 3,
+      "cheboksary": 3,
+      "yoshkar_ola": 3,
+      "volzhsk": 3,
+      "innopolis": 1
+    },
+    "storagePointCount": 10,
+    "pointDayCount": 28,
+    "sellerCount": 200,
+    "productCount": 20000
+  },
+  "files": [
+    {
+      "path": "cities.csv",
+      "sha256": "48158c7ed87632828f49a3e663731c71bc43f8660c3062af6b6317e3deced5df",
+      "rows": 10
+    },
+    {
+      "path": "nodes.csv",
+      "sha256": "87c6a7f22fc7f9a71740790f6feb9994cff0358551dfcae3b0934e30717c4a08",
+      "rows": 13
+    },
+    {
+      "path": "districts.csv",
+      "sha256": "dac40fdefed6f76e3bd3b6b1adcb9a07f4c608ad412fb212d5cd96fac69a6b4c",
+      "rows": 100
+    },
+    {
+      "path": "points.csv",
+      "sha256": "889707b93d4ad653f21f20e943d2be131d90074918a8c491f3c18daa9e5380bd",
+      "rows": 28
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "a46896d364b64e11655e903a226012c76a0b0fb6dcea7978dd4dda150ffa6d25",
+      "rows": 200
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "99ef3aeaab1935f345619675eba37c93e60988096b8dc2504fcf90718722bf05",
+      "rows": 20000
+    },
+    {
+      "path": "categories.csv",
+      "sha256": "5fbe46d67ae54226975107e5f6d6b2add8a9d06603f798a77769673e3bb9ccab",
+      "rows": 4
+    },
+    {
+      "path": "products.csv",
+      "sha256": "99e28d50b1b6730e7bdb7cc90ccbf5f110c96f4967d425d41ea792df36845908",
+      "rows": 20000
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "8e41e2440d25d1eef52546cfe6065166a3fa0ba5b74a4fa8ca232f4523e20795",
+      "rows": 5590
+    },
+    {
+      "path": "return_intents.csv",
+      "sha256": "38cc9b26ba18fb9bf254331baa7ef70f89decf74f70956af342140c83380e956",
+      "rows": 194
+    }
+  ],
+  "notes": [
+    "Synthetic workload parameters; not operational geography.",
+    "CSV used because Parquet writer is unavailable.",
+    "All entity IDs are digit-only strings; names/codes are normalized dimensions."
+  ]
+}

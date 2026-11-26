@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "peak",
+  "seed": 42,
+  "period": {
+    "start": "2026-01-05",
+    "days": 28,
+    "timeZone": "Europe/Moscow"
+  },
+  "initialClock": "2026-01-05T08:00:00Z",
+  "start": {
+    "cityId": "3400000001",
+    "pickupPointId": "3500000002",
+    "at": "2026-01-05T08:00:00Z",
+    "showcaseKey": "3010000001"
+  },
+  "counts": {
+    "pointCount": 6,
+    "preparedOrderCount": 1600,
+    "orderIntentCount": 1600,
+    "lineCount": 1600,
+    "orderCount": 1600,
+    "historyRows": 4032
+  },
+  "files": [
+    {
+      "path": "cities.csv",
+      "sha256": "c8bef37cf287c2057f779f5c27c5af18f54535fc50c7af17b076462811ef92c9",
+      "rows": 2
+    },
+    {
+      "path": "demand_history.csv",
+      "sha256": "a939909b42c2fb639ef952d527a399ab21306ca606a4ae051b33149d3366e035",
+      "rows": 4032
+    },
+    {
+      "path": "expected.json",
+      "sha256": "be6fc31520cfb422586e2deeb8e44d606839d8eed650a5150f8d873b6eb17d5b",
+      "rows": null
+    },
+    {
+      "path": "nodes.csv",
+      "sha256": "1b856cf2fd820d22b311c180ed8aa2856d229cdd689576100f63c066794e5eb4",
+      "rows": 8
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "e77573c926efd5f891480b8597b0f2d67133f4ebd4a6d560759430b80170499b",
+      "rows": 1600
+    },
+    {
+      "path": "peak_events.json",
+      "sha256": "e0719e6d7563aa9b7dbd41b5e117a3a8e425d821f2d72610a5473404ae3f6af6",
+      "rows": null
+    },
+    {
+      "path": "points.csv",
+      "sha256": "06ab6bfe29e10c985f41c80bb9508db3de0b179b41c528730eed2a744827b269",
+      "rows": 6
+    },
+    {
+      "path": "products.csv",
+      "sha256": "0172a0d0b58090a4a65bf30211f74748cbdf293bc3ae68f78a481867f163b53e",
+      "rows": 12
+    },
+    {
+      "path": "replenishments.csv",
+      "sha256": "5c6954d777c4f73930bf30d6617f75b4380b012ab036eff5b2db4cddca5bfeaf",
+      "rows": 24
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "5926bd2eade84fe327d14d2f8d931474f798930d505e668adce7f84e39280818",
+      "rows": 12
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "cdf7af57ee072e4a7a0678e9e472952b8415bd135eb49715fb2b967a69330c45",
+      "rows": 3
+    },
+    {
+      "path": "trips.csv",
+      "sha256": "edf1c09f7e03a41ec0beef037fb22237c251db2a634c0bc7df8fd0edbfc80be3",
+      "rows": 168
+    }
+  ],
+  "demandCanonicalSha256": "45287fd898d6acd475e6794da37fceefed9e1bd032273eae27f113e84d2826f0",
+  "sharedCatalog": {
+    "path": "datasets/shared/catalog_scenarios_1_5.json",
+    "sha256": "cd470823d77c0befda9bbc20e8a40f7f8bcbc535d602017b431492d9bb4e31ba"
+  },
+  "idRules": "^[0-9]+$",
+  "scenario": {
+    "kind": "peak",
+    "baseDatasetId": "dense"
+  }
+}

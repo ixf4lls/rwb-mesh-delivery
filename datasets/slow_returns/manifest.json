@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "slow_returns",
+  "seed": 42,
+  "period": {
+    "timezone": "Europe/Moscow",
+    "from": "2026-01-01",
+    "to": "2026-01-29",
+    "historyDays": 56
+  },
+  "start": {
+    "cityId": "5400000001",
+    "pickupPointId": "5500000001",
+    "initialClock": "2025-12-31T09:12:00Z",
+    "showcaseKey": "5010000001"
+  },
+  "counts": {
+    "pointCount": 6,
+    "preparedOrderCount": 400,
+    "orderIntentCount": 400,
+    "orderCount": 400,
+    "lineCount": 400,
+    "returnIntentCount": 8,
+    "lineHistoryCount": 4032
+  },
+  "files": [
+    {
+      "path": "api_examples.json",
+      "sha256": "8dde031c0cfb9934668a4b14682588db29ebe8823d6ec0cf8076fd718050d75f"
+    },
+    {
+      "path": "cities.csv",
+      "sha256": "8743e5abed3018e44d523b7234578ea9157c3c864bd4147ee34199ccc18429d5",
+      "rows": 1
+    },
+    {
+      "path": "demand_history.csv",
+      "sha256": "d05ef6a1e9310c8b57ffa84d5c8a7f8953b1be7c3a0ff664a44c9a46420f4dd3",
+      "rows": 4032
+    },
+    {
+      "path": "expected.json",
+      "sha256": "bd44d8f4e5bb24e0fdb14b61e6a4872833f403e1630f99b2ba64fcb1b28ee256"
+    },
+    {
+      "path": "order_key_map.csv",
+      "sha256": "50948b11aedcc9b984f2e61e4fccafb305c1315810a8e845b3ff3e26484f3f8d",
+      "rows": 400
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "1904476ee2e3e86867406e11f7635475914137ceeb22adcaf104d11a82437f81",
+      "rows": 400
+    },
+    {
+      "path": "points.csv",
+      "sha256": "454a25ad782f10c79cf196351076ec437df6ccc72c3d1d268c625038a8d523a2",
+      "rows": 6
+    },
+    {
+      "path": "products.csv",
+      "sha256": "ddc2c195e643c554762d320ba042c9581b4f686e945c4d949e9eaed00da51db2",
+      "rows": 12
+    },
+    {
+      "path": "return_intents.csv",
+      "sha256": "396582e8d7e026d0db8d806725ffb89d45823d439f6ef39b8ba7f8651f0621f3",
+      "rows": 8
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "2f34c6a97d357620a46cd4f2232aa17bb6cef62f7b726cd58915f03f745cf10d",
+      "rows": 12
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "fe326d889e0f7128a7b8bd1d84fcac6227676bd80da29c5aad2eafad060c32df",
+      "rows": 3
+    }
+  ]
+}

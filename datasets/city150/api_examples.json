@@ -1,0 +1,72 @@
+[
+  {
+    "contract": "frontend.yaml",
+    "schema": "CityPage",
+    "direction": "response",
+    "body": {
+      "items": [
+        {
+          "id": "6400000001",
+          "name": "Йошкар-Ола",
+          "timeZone": "Europe/Moscow"
+        }
+      ]
+    }
+  },
+  {
+    "contract": "frontend.yaml",
+    "schema": "PickupPointPage",
+    "direction": "response",
+    "body": {
+      "items": [
+        {
+          "node": {
+            "id": "6500000001",
+            "cityId": "6400000001",
+            "name": "ПВЗ 001",
+            "kind": "storage_pvz",
+            "active": true,
+            "mode": "physical"
+          },
+          "acceptsOrders": true,
+          "acceptsReturns": true,
+          "openingHours": [
+            {
+              "weekdays": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "opens": "09:00",
+              "closes": "21:00"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "contract": "frontend.yaml",
+    "schema": "ProductPage",
+    "direction": "response",
+    "body": {
+      "items": [
+        {
+          "id": "6100000001",
+          "sellerId": "6300000001",
+          "sellerSku": "6200000001",
+          "name": "Синтетический товар 001",
+          "weightGrams": 267,
+          "slotsPerUnit": 2,
+          "salePriceMinor": 1173,
+          "unitCostMinor": 571,
+          "category": "home"
+        }
+      ]
+    }
+  }
+]

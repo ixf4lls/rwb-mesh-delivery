@@ -1,0 +1,3 @@
+node_id,city_id,node_code,node_name,kind,mode
+8900000001,8400000008,hub-1,Региональный хаб 1,hub,simulated
+8900000011,8400000008,sc-yoshkar_ola,Сортировочный центр — Йошкар-Ола,sorting_center,simulated

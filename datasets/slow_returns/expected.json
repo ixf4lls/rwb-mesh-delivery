@@ -1,0 +1,50 @@
+{
+  "slowBatch": {
+    "batch_id": "5600000001",
+    "product_id": "5100000012",
+    "storage_point_id": "5500000001",
+    "received_at": "2025-12-31T09:12:00Z",
+    "received_quantity": 20,
+    "slots_per_unit": 1,
+    "units_sold": 3,
+    "remaining_after_three_issues": 17,
+    "additional_replenishments": 0,
+    "tariff": {
+      "currency": "RUB",
+      "storage_threshold_days": 10,
+      "storage_rate_minor_per_slot_day": 200
+    }
+  },
+  "storageDecision": {
+    "action": "keep",
+    "reason": "Сверить остаток на контрольном срезе",
+    "expectedVersion": 1,
+    "recheckAt": "2026-01-30T09:00:00Z",
+    "expectedStatus": "deferred",
+    "followupAction": "transfer_to_hub"
+  },
+  "returns": {
+    "intentCount": 8,
+    "distinctOrders": 8,
+    "resellableCount": 6,
+    "quarantinedCount": 2,
+    "afterCohortWindowCount": 0,
+    "returnIds": [
+      "5700000001",
+      "5700000002",
+      "5700000003",
+      "5700000004",
+      "5700000005",
+      "5700000006",
+      "5700000007",
+      "5700000008"
+    ]
+  },
+  "slowBatchStorageProjection": {
+    "totalSlotDays": 499,
+    "accruedStorageCostMinor": 99800,
+    "ageDaysAtCohortEnd": 29,
+    "plannedTransferCostMinor": 1200,
+    "note": "Illustrative accrued full-24-hour slot storage through cohort end."
+  }
+}

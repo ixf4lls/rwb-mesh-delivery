@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "2.0.0",
+  "scenario": "city150",
+  "seed": 42,
+  "pointDayCombinations": 1050,
+  "orderCount": 21000,
+  "storagePointCount": 15,
+  "pickupOnlyPointCount": 135,
+  "ordersPerPointPerDay": 20,
+  "days": 7,
+  "checks": {
+    "allPointDayPairsUnique": true,
+    "everyPairOrderCount": 20,
+    "allOrdersSingleLine": true,
+    "cutoffPeakEventPoints": 30,
+    "eightOrdersBeforeCutoffPerPoint": true,
+    "sharedTimeReservationWitness": true,
+    "networkSegmentCount": 149
+  },
+  "foreignKeys": {
+    "orders.city_id": "cities.city_id",
+    "orders.pickup_point_id": "points.pickup_point_id",
+    "orders.items_json[].product_id": "products.product_id",
+    "products.seller_id": "sellers.seller_id",
+    "products.seller_sku": "seller_skus.seller_sku",
+    "points.district_id": "districts.district_id"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "city150",
+  "seed": 42,
+  "period": {
+    "from": "2026-11-23",
+    "to": "2026-11-30",
+    "days": 7,
+    "timezone": "Europe/Moscow"
+  },
+  "start": {
+    "cityId": "6400000001",
+    "pickupPointId": "6500000001",
+    "at": "2026-11-23T07:30:00+03:00",
+    "showcaseRequestKey": "6010000208"
+  },
+  "counts": {
+    "pointCount": 150,
+    "preparedOrderCount": 21000,
+    "orderIntentCount": 21000,
+    "lineCount": 21000,
+    "orderCount": 21000,
+    "storagePointCount": 15,
+    "pointDayCount": 1050,
+    "sellerCount": 10,
+    "productCount": 100
+  },
+  "files": [
+    {
+      "path": "api_examples.json",
+      "sha256": "6306d9902a62603e5f3c5d91731d4cb44c7f76744d8bc6ad1643279c264d85a4"
+    },
+    {
+      "path": "categories.csv",
+      "sha256": "eaeacb465898cb3c7b8dfd8bf652c4344a3937428b2b6847640589ab50b8da91",
+      "rows": 4
+    },
+    {
+      "path": "cities.csv",
+      "sha256": "b9cebf016d814747b750973d0741bc388ab0c144750db1aec1cdb5247e635262",
+      "rows": 1
+    },
+    {
+      "path": "districts.csv",
+      "sha256": "d6798505d2866b4551675a63cc515a743e4ab80d791f19b300400a5add2de9df",
+      "rows": 10
+    },
+    {
+      "path": "expected.json",
+      "sha256": "9badb6ca8638bf32c510ea7b759d81824daf07e786447e05a511821da7788abd"
+    },
+    {
+      "path": "network.csv",
+      "sha256": "23bc5af873595c6163ce969cacb8559ecabbcb8d3f82872f7553e262912abf0e",
+      "rows": 149
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "a10a7d5e089c121d710a1ab8c857b2fd2f10f2e17a696c76b195e23697f59c2d",
+      "rows": 21000
+    },
+    {
+      "path": "peak_events.json",
+      "sha256": "c6d06934f4334cc976386eeaaee4574654a0161579238b678210e7f6c5589cb5"
+    },
+    {
+      "path": "point_day_summary.csv",
+      "sha256": "1de61495a16a2fc8f6dd3462d8e51e22eb7cd1a1361ddb4e1c8388fa5a06294d",
+      "rows": 1050
+    },
+    {
+      "path": "points.csv",
+      "sha256": "679fde67b30279e59798dab1cfca3d9fb1c759a043985d43b67d2ebac958f965",
+      "rows": 150
+    },
+    {
+      "path": "products.csv",
+      "sha256": "0c804f23d358df2a422edb513a152d3f0c20307d91a8d9399f691bea9367097f",
+      "rows": 100
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "9979e3f0f65095a05c87817b249006db5733bf853507158b9279ffa09d653947",
+      "rows": 100
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "03303cad898c17a19f10eef8be4169b55b31f90059d2b7e267b56432faa41432",
+      "rows": 10
+    }
+  ]
+}

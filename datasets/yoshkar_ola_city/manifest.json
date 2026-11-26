@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "2.0.0",
+  "datasetId": "yoshkar_ola_city",
+  "seed": 42,
+  "period": {
+    "startLocalDate": "2026-01-05",
+    "days": 1,
+    "timezone": "per-city"
+  },
+  "start": {
+    "cityId": "8400000008",
+    "pickupPointId": "8500020801",
+    "initialClock": "2026-01-05T00:00:00+03:00",
+    "showcaseRequestKey": "80000001000"
+  },
+  "counts": {
+    "pointCount": 150,
+    "preparedOrderCount": 29872,
+    "orderIntentCount": 974,
+    "lineCount": 89610,
+    "cityPointCounts": {
+      "yoshkar_ola": 150
+    },
+    "storagePointCount": 15,
+    "pointDayCount": 150,
+    "sellerCount": 200,
+    "productCount": 20000
+  },
+  "files": [
+    {
+      "path": "cities.csv",
+      "sha256": "4e37332b440e4dc598e75ef0913cd590b50ed8820380499d532bfddc6642e8f6",
+      "rows": 1
+    },
+    {
+      "path": "nodes.csv",
+      "sha256": "0362d3bb455afa7759f5c2c11fd47e95adb8fed012de872f06c60616827c3371",
+      "rows": 2
+    },
+    {
+      "path": "districts.csv",
+      "sha256": "64535217b8864b32c4891efb94f816dfeda98bc5aada0ef0e06c7d3aeb170aea",
+      "rows": 10
+    },
+    {
+      "path": "points.csv",
+      "sha256": "7c9911ebe60dd28bacf0af837b6bfc2600c616afcec0abb23f395e835fee9777",
+      "rows": 150
+    },
+    {
+      "path": "sellers.csv",
+      "sha256": "3afd3450d7f6a8dcf8dc77029a478cfaabbe068735fae21f4a334b8779a2383a",
+      "rows": 200
+    },
+    {
+      "path": "seller_skus.csv",
+      "sha256": "0382dc44efa5b0eac16e455ea26fe266b03be580c4a378f0a592cc297dcb303a",
+      "rows": 20000
+    },
+    {
+      "path": "categories.csv",
+      "sha256": "03e9452574855f16b9eefd9b538b8fdb4247431b6ea889163c0e8fd4fdb18d21",
+      "rows": 4
+    },
+    {
+      "path": "products.csv",
+      "sha256": "cef9900c73a87913716abe58c5e1d9ad36fcc251de372bd01f5fa1fdc3312000",
+      "rows": 20000
+    },
+    {
+      "path": "orders.csv",
+      "sha256": "3d7a7a28f5fd130d28572488f2c27aae5d14b5559eac046f8c6f453a0f3eb954",
+      "rows": 29872
+    },
+    {
+      "path": "return_intents.csv",
+      "sha256": "614755fe8df4e21e6443a86528610f30d9847cdbb410e393950f25c144dd1d8d",
+      "rows": 974
+    }
+  ],
+  "notes": [
+    "Synthetic workload parameters; not operational geography.",
+    "CSV used because Parquet writer is unavailable.",
+    "All entity IDs are digit-only strings; names/codes are normalized dimensions."
+  ]
+}

@@ -1,0 +1,7 @@
+pickup_point_id,city_id,node_id,point_code,point_name,kind,active,accepts_orders,accepts_returns,opening_hours_json
+1500000001,1400000002,1500000001,s1,ПВЗ хранения S1,storage_pvz,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
+1500000002,1400000002,1500000002,s2,ПВЗ хранения S2,storage_pvz,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
+1500000003,1400000002,1500000003,p2,ПВЗ P2,pickup_only,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
+1500000004,1400000002,1500000004,p3,ПВЗ P3,pickup_only,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
+1500000005,1400000002,1500000005,p4,ПВЗ P4,pickup_only,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
+1500000006,1400000002,1500000006,p5,ПВЗ P5,pickup_only,true,true,true,"[{""weekdays"":[1,2,3,4,5,6,7],""opens"":""09:00"",""closes"":""21:00""}]"
